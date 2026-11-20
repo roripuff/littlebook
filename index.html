@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy Little Pages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Amatic+SC:wght@700&family=Bungee&family=Caveat:wght@500;700&family=Chewy&family=Dancing+Script:wght@700&family=Fredoka:wght@500;600;700&family=Lobster&family=Pacifico&family=Sacramento&family=Shrikhand&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --P: min(40vw, 440px, 66vh);
+    --bg:#FFF6EE;
+    --ink:#5B4B6E;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden}
+  body{
+    background:
+      radial-gradient(circle at 12% 18%, #FFE1EA 0 120px, transparent 260px),
+      radial-gradient(circle at 88% 22%, #DDF3E8 0 110px, transparent 260px),
+      radial-gradient(circle at 80% 88%, #E5DDF8 0 120px, transparent 280px),
+      radial-gradient(circle at 15% 85%, #FFF0C6 0 100px, transparent 260px),
+      var(--bg);
+    font-family:'Fredoka', system-ui, sans-serif;color:var(--ink);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    -webkit-tap-highlight-color:transparent; user-select:none;
+  }
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;
+    background-image:radial-gradient(#E9C9D6 1.2px, transparent 1.3px);background-size:26px 26px;opacity:.45}
+  header{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:16px 22px;z-index:50}
+  .brand{font-family:'Pacifico',cursive;font-size:clamp(20px,3vw,28px);color:#E7849F;text-shadow:2px 2px 0 #fff}
+  .brand small{font-family:'Fredoka';font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#9C8BB5;margin-left:10px;text-shadow:none;vertical-align:middle}
+  .iconbtn{border:none;background:#fff;color:var(--ink);width:44px;height:44px;border-radius:50%;font-size:19px;cursor:pointer;box-shadow:0 4px 0 #EBD9F7, 0 8px 18px rgba(126,107,168,.15);transition:transform .15s}
+  .iconbtn:hover{transform:translateY(-2px)}
+  .iconbtn.off{opacity:.45}
+  .iconbtn:focus-visible,.btn:focus-visible,.stage:focus-visible{outline:3px dashed #E7849F;outline-offset:4px}
+
+  .stage{position:relative;width:100%;height:calc(var(--P) + 60px);display:flex;align-items:center;justify-content:center;perspective:2400px;outline:none;margin-top:10px}
+  .book{position:relative;flex-shrink:0;width:calc(var(--P) * 2);height:var(--P);
+    transform:translateX(calc(var(--P) * -0.5)) rotateX(10deg) rotateZ(-2deg);
+    transition:transform 1s cubic-bezier(.6,0,.2,1);cursor:pointer}
+  .book.open{transform:translateX(0) rotateX(12deg) rotateZ(0deg)}
+  .book.closed .float{animation:bob 3.2s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-8px) rotate(.6deg)}}
+  .float{position:absolute;inset:0}
+  .page{position:absolute;top:0;width:var(--P);height:var(--P);border-radius:6px;transition:box-shadow .8s ease, opacity .5s}
+  .page.left{left:0;border-radius:6px 2px 2px 6px}
+  .page.right{left:var(--P);border-radius:2px 6px 6px 2px}
+  .book.closed .page.left,.book.hideLeft .page.left{opacity:0;transition:none}
+  .face{position:absolute;inset:0;overflow:hidden;border-radius:inherit;background:#fff}
+  .face svg,.leaf svg{width:100%;height:100%;display:block}
+  .page.right .face::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(91,75,110,.18),rgba(91,75,110,.04) 6%,transparent 14%)}
+  .page.left .face::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(270deg,rgba(91,75,110,.2),rgba(91,75,110,.05) 6%,transparent 14%)}
+  .leaves{position:absolute;top:0;left:var(--P);width:var(--P);height:var(--P);perspective:2200px;perspective-origin:0% 50%;z-index:5;pointer-events:none}
+  .leaf{position:absolute;inset:0;transform-origin:0% 50%;transform-style:preserve-3d;will-change:transform}
+  .leaf .side{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+  .leaf .front{border-radius:2px 6px 6px 2px}
+  .leaf .back{transform:rotateY(180deg);border-radius:6px 2px 2px 6px}
+  .leaf .shade{position:absolute;inset:0;pointer-events:none;opacity:0}
+  .leaf .front .shade{background:linear-gradient(90deg,rgba(91,75,110,.35),rgba(91,75,110,.12))}
+  .leaf .back .shade{background:linear-gradient(270deg,rgba(91,75,110,.35),rgba(91,75,110,.12))}
+  .leaf.cover .front{border-radius:4px 10px 10px 4px}
+
+  .glow{position:absolute;inset:-14px;border-radius:18px;pointer-events:none;opacity:0;
+    background:radial-gradient(closest-side,rgba(255,240,180,.9),rgba(255,240,180,0));}
+  .glow.on{animation:glow 1.4s ease-out}
+  @keyframes glow{0%{opacity:0;transform:scale(.9)}25%{opacity:.9}100%{opacity:0;transform:scale(1.08)}}
+
+  .tag{display:none;position:absolute;left:50%;bottom:-6px;transform:translate(-50%,100%);font-family:'Caveat',cursive;font-weight:700;font-size:22px;color:#9C8BB5;white-space:nowrap;transition:opacity .4s}
+  .hint{font-family:'Caveat',cursive;font-weight:700;font-size:clamp(22px,3vw,28px);color:#E7849F;margin-top:26px;min-height:36px;text-align:center;animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.55;transform:translateY(2px)}}
+  .controls{display:flex;gap:12px;margin-top:8px;opacity:0;transform:translateY(10px);transition:all .5s;pointer-events:none;flex-wrap:wrap;justify-content:center}
+  .controls.show{opacity:1;transform:none;pointer-events:auto}
+  .btn{border:none;cursor:pointer;font-family:'Fredoka';font-weight:600;font-size:16px;padding:11px 20px;border-radius:999px;color:var(--ink);transition:transform .15s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.pink{background:#FBD3DE;box-shadow:0 4px 0 #EFAFC2}
+  .btn.mint{background:#CDEFDF;box-shadow:0 4px 0 #A6DCC2}
+  .btn.lav{background:#E2D8F7;box-shadow:0 4px 0 #C6B6EC}
+  .btn:active{transform:translateY(3px);box-shadow:none}
+
+  .confetti{position:fixed;pointer-events:none;z-index:60;border-radius:2px}
+  .lightbox{position:fixed;inset:0;z-index:80;background:rgba(255,246,238,.82);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .35s;cursor:zoom-out}
+  .lightbox.show{opacity:1;pointer-events:auto}
+  .lightbox .card{width:min(88vw,80vh,640px);aspect-ratio:1;border-radius:14px;overflow:hidden;box-shadow:0 30px 60px rgba(126,107,168,.3),0 0 0 10px #fff;transform:scale(.85) rotate(-3deg);transition:transform .45s cubic-bezier(.3,1.5,.5,1)}
+  .lightbox.show .card{transform:scale(1) rotate(0)}
+  .lightbox .card svg{width:100%;height:100%;display:block}
+  .loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:100;font-family:'Caveat',cursive;font-size:30px;color:#E7849F;transition:opacity .5s}
+  .loading.gone{opacity:0;pointer-events:none}
+
+  @media (max-width:720px){
+    :root{--P:min(80vw,60vh)}
+    .book.open{transform:translateX(calc(var(--P) * -0.5)) rotateX(8deg)}
+    .brand small{display:none}
+  }
+  @media (prefers-reduced-motion: reduce){ .book.closed .float,.hint{animation:none} }
+</style>
+</head>
+<body>
+<div class="loading" id="loading">warming up the pages…</div>
+<header>
+  <div class="brand">Happy Little Pages <small>quotes · treats · tunes</small></div>
+  <div style="display:flex;gap:10px"><button class="iconbtn" id="music" aria-label="Turn music off" title="Background music">🎵</button><button class="iconbtn" id="sound" aria-label="Turn page sounds off" title="Page sounds">🔊</button></div>
+</header>
+
+<div class="stage" id="stage" tabindex="0" role="button" aria-label="Flip the book to a random page">
+  <div class="book closed" id="book">
+    <div class="float">
+      <div class="glow" id="glow" style="left:var(--P);width:var(--P)"></div>
+      <div class="page left" id="left"><div class="face" id="leftFace"></div></div>
+      <div class="page right" id="right"><div class="face" id="rightFace"></div></div>
+      <div class="leaves" id="leaves"></div>
+      <div class="tag" id="tag" style="left:calc(var(--P) * 1.5)"></div>
+    </div>
+  </div>
+</div>
+<div class="hint" id="hint">tap the book to open it ✿</div>
+<div class="controls" id="controls">
+  <button class="btn pink" id="again">↻ Flip again</button>
+  <button class="btn mint" id="big">⤢ View big</button>
+  <button class="btn lav" id="close">Close book</button>
+</div>
+<div class="lightbox" id="lightbox" aria-hidden="true"><div class="card" id="lbcard"></div></div>
+
+<script>
+/* ============ palette & fonts ============ */
+const C={pink:'#F9C9D6',rose:'#E7849F',deepRose:'#D9668A',peach:'#FFD3B6',apricot:'#F4A37F',butter:'#FFF0B3',lemon:'#FBD96A',mint:'#C9EEDB',mint2:'#A8E2C8',teal:'#4F9A92',sky:'#C8E4F6',blue:'#7FA7D9',lav:'#DCCFF5',plum:'#7E6BA8',lilac:'#EBD9F7',sage:'#CFE6C3',leaf:'#8CC59A',leaf2:'#6FB083',ink:'#5B4B6E',coral:'#FF9E93',choc:'#A47863',tan:'#EBC491',white:'#FFFFFF',cream:'#FFF8EE'};
+const F={pac:"'Pacifico',cursive",sac:"'Sacramento',cursive",ama:"'Amatic SC',cursive",fred:"'Fredoka',sans-serif",abr:"'Abril Fatface',serif",shr:"'Shrikhand',cursive",cav:"'Caveat',cursive",bun:"'Bungee',sans-serif",lob:"'Lobster',cursive",dan:"'Dancing Script',cursive",che:"'Chewy',cursive"};
+const FONT_LOAD=["Pacifico","Sacramento","700 32px 'Amatic SC'","600 32px Fredoka","Abril Fatface","Shrikhand","700 32px Caveat","Bungee","Lobster","700 32px 'Dancing Script'","Chewy"];
+const PASTELS=['#F9C9D6','#FFD3B6','#FFF0B3','#C9EEDB','#C8E4F6','#DCCFF5','#EBD9F7','#CFE6C3','#FFE0E6','#FFE9C9','#D7F0F2','#F3D7EE'];
+
+/* ============ helpers ============ */
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const g=(x,y,s,r,inner)=>`<g transform="translate(${x} ${y}) rotate(${r||0}) scale(${s||1})">${inner}</g>`;
+function T(txt,x,y,o={}){
+  const a=[`x="${x}"`,`y="${y}"`,`text-anchor="${o.a||'middle'}"`,`font-family="${o.f||F.fred}"`,`font-size="${o.s||40}"`,`fill="${o.c||C.ink}"`];
+  if(o.w)a.push(`font-weight="${o.w}"`); if(o.ls)a.push(`letter-spacing="${o.ls}"`);
+  if(o.st)a.push(`stroke="${o.st}" stroke-width="${o.sw||8}" paint-order="stroke" stroke-linejoin="round"`);
+  if(o.r)a.push(`transform="rotate(${o.r} ${x} ${y})"`);
+  if(o.op)a.push(`opacity="${o.op}"`);
+  return `<text ${a.join(' ')} data-maxw="${o.max||340}">${esc(txt)}</text>`;
+}
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function confetti(seed,n,cols,avoid=[],sz=1){const R=rng(seed);let s='';let k=0,tries=0;while(k<n&&tries<n*30){tries++;const x=R()*390+5,y=R()*370+5;if(avoid.some(([x1,y1,x2,y2])=>x>x1&&x<x2&&y>y1&&y<y2))continue;const c=cols[k%cols.length];const t=R();const rot=R()*180;
+  if(t<.35)s+=`<rect x="${x}" y="${y}" width="${4*sz}" height="${11*sz}" rx="${2*sz}" fill="${c}" transform="rotate(${rot} ${x} ${y})"/>`;
+  else if(t<.65)s+=`<circle cx="${x}" cy="${y}" r="${(2.5+R()*3)*sz}" fill="${c}"/>`;
+  else if(t<.85)s+=g(x,y,.6*sz,rot,sparkle(c));
+  else s+=`<path d="M${x} ${y} q4 -6 8 0 t8 0" stroke="${c}" stroke-width="${2.5*sz}" fill="none" stroke-linecap="round"/>`;k++;}return s;}
+function dotsGrid(c,step=24,r=2,op=.5,off=0){let s=`<g fill="${c}" opacity="${op}">`;for(let y=step/2;y<400;y+=step)for(let x=step/2+((y/step|0)%2?step/2:0)+off;x<400;x+=step)s+=`<circle cx="${x}" cy="${y}" r="${r}"/>`;return s+'</g>';}
+
+/* ============ illustration library ============ */
+const kawaii=(x=0,y=0,s=1,ink=C.ink)=>g(x,y,s,0,`<path d="M-14 -4 q4 -5 8 0 M6 -4 q4 -5 8 0" stroke="${ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M-5 4 q5 5 10 0" stroke="${ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="-19" cy="4" rx="5" ry="3" fill="#F49BB2" opacity=".8"/><ellipse cx="19" cy="4" rx="5" ry="3" fill="#F49BB2" opacity=".8"/>`);
+const silly=(x=0,y=0,s=1)=>g(x,y,s,0,`<circle cx="-9" cy="-4" r="3" fill="${C.ink}"/><path d="M5 -6 l7 3 l-7 3" stroke="${C.ink}" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M-7 5 q7 6 14 0" stroke="${C.ink}" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M1 8 q0 8 5 7 q4 -1 2 -8" fill="#F48A9E"/><ellipse cx="-17" cy="4" rx="4.5" ry="2.8" fill="#F49BB2" opacity=".8"/><ellipse cx="18" cy="4" rx="4.5" ry="2.8" fill="#F49BB2" opacity=".8"/>`);
+const flower=(c,m=C.lemon)=>[0,72,144,216,288].map(a=>`<ellipse cx="0" cy="-13" rx="9" ry="13" fill="${c}" transform="rotate(${a})"/>`).join('')+`<circle r="7" fill="${m}"/><circle r="2.6" fill="#fff" opacity=".7" cx="-2" cy="-2"/>`;
+const daisy=(c='#fff',m=C.lemon)=>Array.from({length:12},(_,i)=>`<ellipse cx="0" cy="-14" rx="4.5" ry="12" fill="${c}" transform="rotate(${i*30})"/>`).join('')+`<circle r="8" fill="${m}"/>`;
+const tulip=(c,s=C.leaf2)=>`<path d="M0 0 C2 20 0 40 0 60" stroke="${s}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M0 44 C10 30 20 30 26 22 C12 20 4 28 0 44Z" fill="${s}"/><path d="M-16 -18 L-8 -6 L0 -20 L8 -6 L16 -18 C18 0 10 8 0 8 C-10 8 -18 0 -16 -18Z" fill="${c}"/>`;
+const leaf=c=>`<path d="M0 0 C10 -10 10 -28 0 -40 C-10 -28 -10 -10 0 0Z" fill="${c}"/><path d="M0 -4 L0 -34" stroke="#fff" stroke-opacity=".5" stroke-width="1.5"/>`;
+function sprig(c=C.leaf,n=5){let s=`<path d="M0 0 Q6 ${-n*11} 0 ${-n*23}" stroke="${c}" stroke-width="3" fill="none" stroke-linecap="round"/>`;for(let i=1;i<=n;i++){const side=i%2?1:-1;s+=g(side*1.5,-i*21,.55,side*55,leaf(c));}return s+g(0,-n*23+4,.5,0,leaf(c));}
+const sun=(c=C.lemon,ray=C.apricot,face=true)=>Array.from({length:12},(_,i)=>`<rect x="-4" y="-58" width="8" height="18" rx="4" fill="${ray}" transform="rotate(${i*30})"/>`).join('')+`<circle r="35" fill="${c}"/>`+(face?kawaii(0,4,1):'');
+const cloud=(c='#fff',face=0)=>`<g fill="${c}"><circle cx="-22" cy="2" r="16"/><circle cx="0" cy="-10" r="22"/><circle cx="22" cy="2" r="16"/><rect x="-38" y="0" width="76" height="18" rx="9"/></g>`+(face===1?kawaii(0,4,.7):face===2?silly(0,4,.8):'');
+const rainbow=(cols,r=120,w=16)=>cols.map((c,i)=>{const R=r-i*w;return `<path d="M${-R} 0 A${R} ${R} 0 0 1 ${R} 0" stroke="${c}" stroke-width="${w+.6}" fill="none"/>`}).join('');
+const heart=c=>`<path d="M0 12 C-26 -6 -12 -26 0 -12 C12 -26 26 -6 0 12Z" fill="${c}"/>`;
+function star(c,r=12){let p=[];for(let i=0;i<10;i++){const R=i%2?r*.45:r;const a=-Math.PI/2+i*Math.PI/5;p.push((Math.cos(a)*R).toFixed(1)+','+(Math.sin(a)*R).toFixed(1));}return `<polygon points="${p.join(' ')}" fill="${c}" stroke="${c}" stroke-width="2" stroke-linejoin="round"/>`;}
+const sparkle=c=>`<path d="M0 -12 Q2 -2 12 0 Q2 2 0 12 Q-2 2 -12 0 Q-2 -2 0 -12Z" fill="${c}"/>`;
+const moon=c=>`<path d="M0 -30 A30 30 0 1 0 0 30 A40 40 0 0 1 0 -30Z" fill="${c}"/>`;
+const balloon=(a,b)=>`<path d="M0 -44 C30 -44 38 -12 12 18 L-12 18 C-38 -12 -30 -44 0 -44Z" fill="${a}"/><path d="M0 -44 C12 -44 16 -12 5 18 L-5 18 C-16 -12 -12 -44 0 -44Z" fill="${b}"/><path d="M-11 18 L-8 30 M11 18 L8 30" stroke="${C.choc}" stroke-width="1.6"/><rect x="-9" y="29" width="18" height="12" rx="3" fill="${C.tan}"/><path d="M-9 33 h18" stroke="${C.choc}" stroke-width="1.2"/>`;
+const sprinkles=(arr)=>arr.map(([x,y,r,c])=>`<rect x="${x-1.5}" y="${y-4}" width="3" height="8" rx="1.5" fill="${c}" transform="rotate(${r} ${x} ${y})"/>`).join('');
+const cupcake=(w,f)=>`<path d="M-24 0 L24 0 L18 32 L-18 32Z" fill="${w}"/>${[-14,-5,4,13].map(x=>`<path d="M${x} 2 L${(x*.78).toFixed(1)} 30" stroke="#fff" stroke-opacity=".55" stroke-width="2.5"/>`).join('')}<g fill="${f}"><circle cx="-16" cy="-4" r="13"/><circle cx="16" cy="-4" r="13"/><circle cx="0" cy="-12" r="16"/><circle cx="0" cy="-27" r="10"/><rect x="-29" y="-6" width="58" height="9" rx="4.5"/></g>`+sprinkles([[-14,-8,30,C.blue],[-4,-18,-40,C.lemon],[8,-10,60,C.rose],[16,-2,-20,C.teal],[-20,0,80,C.apricot],[2,-28,10,C.plum]])+`<circle cx="0" cy="-41" r="6" fill="#EE6F8A"/><path d="M0 -46 q3 -8 9 -9" stroke="${C.leaf2}" stroke-width="2" fill="none"/>`;
+const iceCream=()=>`<path d="M-22 0 L22 0 L0 56Z" fill="${C.tan}"/><path d="M-14 4 L8 40 M0 4 L15 26 M14 4 L-8 40 M0 4 L-15 26" stroke="#CF9F66" stroke-width="2"/><circle cx="-12" cy="-6" r="16" fill="${C.mint2}"/><circle cx="12" cy="-6" r="16" fill="#F7B6C8"/><circle cx="0" cy="-27" r="18" fill="#FFE9A8"/><path d="M-26 -4 Q-24 10 -18 4 Q-14 14 -8 2 Q-2 12 4 2 Q10 14 16 3 Q22 10 26 -4Z" fill="#F7B6C8"/>`+sprinkles([[-8,-32,30,C.rose],[6,-36,-30,C.blue],[10,-24,70,C.teal],[-14,-20,-60,C.apricot],[0,-18,10,C.plum],[-18,-8,40,C.lemon],[16,-10,-20,C.lemon]])+`<circle cx="2" cy="-48" r="5.5" fill="#EE6F8A"/>`;
+const lemon=()=>`<path d="M-34 0 C-30 -24 30 -24 34 0 C30 24 -30 24 -34 0Z" fill="${C.lemon}"/><circle cx="-35" cy="0" r="4" fill="${C.lemon}"/><circle cx="35" cy="0" r="4" fill="${C.lemon}"/><path d="M-16 -9 q10 -6 20 -4" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".6" fill="none"/>`+g(-4,-14,.5,-60,leaf(C.leaf2));
+const lemonSlice=(c=C.lemon)=>`<circle r="30" fill="${c}"/><circle r="25" fill="#FFF6C8"/>`+Array.from({length:8},(_,i)=>`<path d="M0 0 L0 -23" stroke="${c}" stroke-width="2.5" transform="rotate(${i*45})"/>`).join('')+`<circle r="3.5" fill="${c}"/>`;
+const strawberry=()=>`<path d="M0 32 C-26 12 -28 -12 -12 -16 C-4 -18 4 -18 12 -16 C28 -12 26 12 0 32Z" fill="#F48A9E"/>`+[[-10,-4],[2,-8],[12,0],[-4,8],[8,12],[-12,10],[0,20]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="1.6" ry="2.4" fill="#FFF3B0"/>`).join('')+`<path d="M0 -14 L-14 -22 L-6 -14 L-10 -26 L0 -17 L10 -26 L6 -14 L14 -22Z" fill="${C.leaf2}"/>`;
+const melon=()=>`<path d="M-44 0 A44 44 0 0 0 44 0Z" fill="#8FCB98"/><path d="M-39 0 A39 39 0 0 0 39 0Z" fill="#F4FFF0"/><path d="M-35 0 A35 35 0 0 0 35 0Z" fill="#F7A0AF"/>`+[[-18,8],[0,14],[18,8],[-8,22],[8,22]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="2" ry="3.4" fill="${C.ink}"/>`).join('');
+const donut=bg=>`<circle r="44" fill="${C.tan}"/><path d="M0 -40 C14 -40 26 -36 34 -26 C42 -14 38 -6 40 4 C40 18 30 30 20 36 C10 40 4 34 -4 38 C-16 42 -26 34 -34 24 C-40 14 -36 4 -40 -6 C-40 -20 -28 -36 -12 -38 C-6 -40 -4 -40 0 -40Z" fill="#F7B6D2"/>`+sprinkles([[-22,-18,30,C.blue],[-6,-30,-40,C.lemon],[16,-26,60,C.teal],[28,-6,-20,'#fff'],[24,16,80,C.apricot],[6,28,10,C.plum],[-16,24,40,C.lemon],[-30,4,-60,'#fff'],[18,6,30,C.rose],[-18,-2,70,C.teal]])+`<circle r="13" fill="${bg}"/><circle r="13" fill="none" stroke="#E79BBE" stroke-width="2"/>`;
+const teacup=c=>`<path d="M-14 -18 C-22 -28 -6 -34 -14 -46 M2 -18 C-6 -30 10 -36 2 -50 M18 -18 C10 -28 26 -34 18 -46" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".9"/><ellipse cx="0" cy="34" rx="50" ry="10" fill="#fff"/><ellipse cx="0" cy="32" rx="38" ry="6" fill="${C.lilac}"/><path d="M30 0 C48 -2 48 22 24 22" stroke="${c}" stroke-width="7" fill="none"/><path d="M-32 -8 L32 -8 C32 18 18 32 0 32 C-18 32 -32 18 -32 -8Z" fill="${c}"/><ellipse cx="0" cy="-8" rx="32" ry="6" fill="#E9BE90"/>`+g(0,12,.6,0,heart('#fff'));
+function plant(c,n){let s=`<path d="M0 0 C-2 ${-n*8} 2 ${-n*14} 0 ${-n*20}" stroke="${C.leaf2}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;for(let i=1;i<=n;i++){s+=g(0,-i*18+4,.5+i*.06,i%2?60:-60,leaf(i%2?C.leaf:C.leaf2));}s+=g(0,-n*20+2,.55,0,leaf(C.leaf));return s+`<path d="M-24 0 L24 0 L18 36 L-18 36Z" fill="${c}"/><rect x="-27" y="-7" width="54" height="11" rx="3" fill="${c}"/><rect x="-27" y="-7" width="54" height="11" rx="3" fill="#fff" opacity=".25"/>`;}
+const cat=(c='#FFE6D2',ink=C.ink)=>`<path d="M40 6 C72 8 68 -26 46 -20" stroke="${c}" stroke-width="10" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="0" rx="46" ry="26" fill="${c}"/><path d="M-6 -20 q8 6 16 0 M8 -22 q8 6 16 0" stroke="#F4C6A8" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="-34" cy="-8" r="22" fill="${c}"/><path d="M-53 -18 L-50 -40 L-38 -28Z M-28 -29 L-18 -40 L-15 -19Z" fill="${c}"/><path d="M-50 -24 L-49 -34 L-42 -28Z" fill="#F7B6C8"/><path d="M-44 -8 q4 3 8 0 M-30 -8 q4 3 8 0" stroke="${ink}" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="-47" cy="0" rx="4" ry="2.5" fill="#F49BB2"/><ellipse cx="-19" cy="0" rx="4" ry="2.5" fill="#F49BB2"/><path d="M-36 -1 l2 2 l2 -2" stroke="${ink}" stroke-width="1.5" fill="none"/>`;
+const bird=c=>`<path d="M-22 0 L-38 -8 L-34 8Z" fill="${c}"/><path d="M-24 4 C-24 -18 6 -26 18 -10 C24 -2 22 14 6 18 C-8 22 -24 18 -24 4Z" fill="${c}"/><path d="M-8 2 C-2 -14 14 -12 10 2 C4 9 -4 9 -8 2Z" fill="#fff" opacity=".55"/><circle cx="10" cy="-8" r="2.4" fill="${C.ink}"/><path d="M19 -9 L29 -5 L19 -1Z" fill="${C.apricot}"/><ellipse cx="12" cy="-1" rx="3.5" ry="2" fill="#F49BB2" opacity=".8"/>`;
+const bee=()=>`<ellipse cx="-4" cy="-14" rx="9" ry="12" fill="#fff" opacity=".9" transform="rotate(-20 -4 -14)"/><ellipse cx="8" cy="-14" rx="8" ry="11" fill="#fff" opacity=".9" transform="rotate(20 8 -14)"/><ellipse rx="18" ry="13" fill="${C.lemon}"/><path d="M-6 -12 v24 M4 -12.5 v25" stroke="${C.ink}" stroke-width="5"/><path d="M-18 0 l-6 0" stroke="${C.ink}" stroke-width="2"/><circle cx="12" cy="-3" r="2" fill="${C.ink}"/><ellipse cx="13" cy="3" rx="2.6" ry="1.6" fill="#F49BB2"/>`;
+const butterfly=(a,b)=>`<ellipse cx="-14" cy="-10" rx="14" ry="11" fill="${a}" transform="rotate(-30 -14 -10)"/><ellipse cx="14" cy="-10" rx="14" ry="11" fill="${a}" transform="rotate(30 14 -10)"/><ellipse cx="-10" cy="10" rx="9" ry="8" fill="${b}"/><ellipse cx="10" cy="10" rx="9" ry="8" fill="${b}"/><circle cx="-15" cy="-11" r="3.5" fill="#fff" opacity=".7"/><circle cx="15" cy="-11" r="3.5" fill="#fff" opacity=".7"/><rect x="-2.5" y="-16" width="5" height="32" rx="2.5" fill="${C.ink}"/><path d="M-1 -16 q-4 -8 -8 -10 M1 -16 q4 -8 8 -10" stroke="${C.ink}" stroke-width="1.5" fill="none"/>`;
+function wave(y,c,a=12,l=50,off=0){let d=`M${-off} ${y}`;for(let x=-off;x<420;x+=l)d+=` q${l/4} ${-a} ${l/2} 0 t${l/2} 0`;return `<path d="${d} V400 H${-off}Z" fill="${c}"/>`;}
+const ribbon=(w,c,d)=>`<path d="M${-w/2-34} -10 L${-w/2+8} -10 L${-w/2+8} 34 L${-w/2-34} 34 L${-w/2-20} 12Z" fill="${d}"/><path d="M${w/2+34} -10 L${w/2-8} -10 L${w/2-8} 34 L${w/2+34} 34 L${w/2+20} 12Z" fill="${d}"/><path d="M${-w/2+8} 25 L${-w/2+8} 34 L${-w/2-2} 25Z M${w/2-8} 25 L${w/2-8} 34 L${w/2+2} 25Z" fill="${C.ink}" opacity=".25"/><rect x="${-w/2}" y="-25" width="${w}" height="50" rx="4" fill="${c}"/>`;
+function wreath(r,n,cols,flw){let s='';for(let i=0;i<n;i++){const a=i*360/n,rad=a*Math.PI/180;s+=g((Math.cos(rad)*r).toFixed(1),(Math.sin(rad)*r).toFixed(1),.5,a+(i%2?150:210),leaf(cols[i%cols.length]));}
+  if(flw)flw.forEach(([a,c],i)=>{const rad=a*Math.PI/180;s+=g((Math.cos(rad)*r).toFixed(1),(Math.sin(rad)*r).toFixed(1),.75,a,i%2?daisy('#fff',C.lemon):flower(c));});return s;}
+const note=c=>`<path d="M0 0 V-34 L22 -40 V-6" stroke="${c}" stroke-width="4" fill="none" stroke-linejoin="round"/><ellipse cx="-5" cy="0" rx="7" ry="5" fill="${c}" transform="rotate(-20 -5 0)"/><ellipse cx="17" cy="-6" rx="7" ry="5" fill="${c}" transform="rotate(-20 17 -6)"/>`;
+const vinyl=c=>`<circle r="44" fill="#6E5F8C"/><circle r="38" fill="none" stroke="#857AA0" stroke-width="1"/><circle r="32" fill="none" stroke="#857AA0" stroke-width="1"/><circle r="26" fill="none" stroke="#857AA0" stroke-width="1"/><path d="M-30 -22 A37 37 0 0 1 -8 -36" stroke="#fff" stroke-opacity=".35" stroke-width="3" fill="none" stroke-linecap="round"/><circle r="15" fill="${c}"/><circle r="2.5" fill="#fff"/>`;
+const umbrella=(a,b)=>`<path d="M-50 0 A50 50 0 0 1 50 0 Q37.5 -10 25 0 Q12.5 -10 0 0 Q-12.5 -10 -25 0 Q-37.5 -10 -50 0Z" fill="${a}"/><path d="M0 -50 C-14 -36 -16 -14 -25 0 Q-12.5 -10 0 0 Q12.5 -10 25 0 C16 -14 14 -36 0 -50Z" fill="${b}"/><path d="M0 -2 V40 q0 10 -10 10 q-8 0 -8 -8" stroke="${C.ink}" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="0" cy="-52" r="3" fill="${C.ink}"/>`;
+const drop=c=>`<path d="M0 -10 C4 -4 6 0 6 3 A6 6 0 0 1 -6 3 C-6 0 -4 -4 0 -10Z" fill="${c}"/>`;
+const glass=(liq,foam)=>`<rect x="2" y="-74" width="6" height="74" rx="3" fill="${C.rose}" transform="rotate(14 5 -37)"/><path d="M-27 -40 L27 -40 L21 36 Q20 42 13 42 L-13 42 Q-20 42 -21 36Z" fill="#fff" opacity=".75"/><path d="M-24 -22 L24 -22 L19 33 Q18 38 13 38 L-13 38 Q-18 38 -19 33Z" fill="${liq}"/><path d="M-24 -22 L24 -22 L23.4 -14 L-23.4 -14Z" fill="${foam}"/><rect x="-14" y="-6" width="12" height="12" rx="3" fill="#fff" opacity=".55" transform="rotate(15 -8 0)"/><rect x="4" y="8" width="11" height="11" rx="3" fill="#fff" opacity=".55" transform="rotate(-12 9 13)"/><path d="M-21 -36 L-17 30" stroke="#fff" stroke-width="3" opacity=".8" stroke-linecap="round"/>`;
+const bowl=(c,scoop)=>`<circle cx="-16" cy="-6" r="18" fill="${scoop}"/><circle cx="14" cy="-8" r="19" fill="${scoop}"/><circle cx="0" cy="-22" r="17" fill="${scoop}"/><path d="M-8 -30 q6 -4 12 0" stroke="#fff" stroke-width="3" opacity=".6" fill="none" stroke-linecap="round"/><path d="M-48 0 L48 0 C48 28 26 42 0 42 C-26 42 -48 28 -48 0Z" fill="${c}"/><path d="M-36 10 h72" stroke="#fff" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" opacity=".7"/>`;
+const bites=()=>`<ellipse cx="0" cy="18" rx="58" ry="14" fill="#fff"/><ellipse cx="0" cy="16" rx="46" ry="9" fill="${C.lilac}"/>`+[[-24,6],[0,8],[24,6],[-12,-12],[12,-12],[0,-30]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="13" fill="#B58A72"/><circle cx="${x-4}" cy="${y-3}" r="2" fill="#6E4E3E"/><circle cx="${x+4}" cy="${y+3}" r="2" fill="#6E4E3E"/><circle cx="${x+3}" cy="${y-5}" r="1.5" fill="#E7CDB2"/>`).join('');
+function mountains(){return `<path d="M-10 400 L110 210 L230 400Z" fill="#B9D9C6"/><path d="M110 210 L88 245 L100 240 L110 252 L121 240 L132 245Z" fill="#fff"/><path d="M120 400 L270 170 L420 400Z" fill="#A8CFC0"/><path d="M270 170 L244 210 L258 204 L270 218 L283 204 L296 210Z" fill="#fff"/><path d="M270 170 V128" stroke="${C.ink}" stroke-width="3"/><path d="M270 128 L302 138 L270 150Z" fill="${C.rose}"/><path d="M-10 400 C80 330 160 360 220 340 C290 316 340 350 420 320 V400Z" fill="#CFE9C8"/>`;}
+function garland(y,cols){let s=`<path d="M-10 ${y} Q200 ${y+70} 410 ${y}" stroke="${C.ink}" stroke-width="1.5" fill="none" opacity=".5"/>`;for(let i=0;i<14;i++){const t=i/13;const x=-10+420*t;const yy=y+70*2*t*(1-t)*1;const c=cols[i%cols.length];s+=`<ellipse cx="${x.toFixed(1)}" cy="${(yy+4).toFixed(1)}" rx="9" ry="13" fill="none" stroke="${c}" stroke-width="7" transform="rotate(${i%2?70:0} ${x.toFixed(1)} ${(yy+4).toFixed(1)})"/>`;}return s;}
+const bookmark=()=>`<rect x="-26" y="-70" width="52" height="140" rx="6" fill="#fff"/><rect x="-20" y="-64" width="40" height="128" rx="4" fill="#FFF8EE"/>`+g(-4,-30,.7,-10,flower(C.pink,C.lemon))+g(8,0,.6,20,daisy('#fff',C.apricot))+g(-6,26,.6,0,sprig(C.leaf,3))+g(10,44,.5,0,flower(C.lav,C.lemon))+`<circle cx="0" cy="-58" r="3.5" fill="${C.lilac}" stroke="${C.plum}" stroke-width="1.5"/><path d="M0 -58 C-12 -80 10 -88 -4 -108 M0 -58 C10 -78 -2 -90 12 -104" stroke="${C.rose}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+const envelope=c=>`<rect x="-34" y="-22" width="68" height="44" rx="4" fill="${c}"/><path d="M-34 -20 L0 6 L34 -20" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>`+g(0,8,.45,0,heart(C.rose));
+
+/* ============ the pages ============ */
+const L=(arr)=>arr.join('');
+const PAGES=[
+// 1
+{bg:'#FFF3C4',ink:C.plum,art:()=>L([
+  confetti(11,18,[C.apricot,C.rose,C.leaf],[[40,150,360,340]]),
+  g(200,105,1.25,0,A.sway(sun('#FFE07A',C.apricot),6,4)),
+  T('bloom',200,262,{f:F.pac,s:88,c:C.rose,st:'#fff',sw:10}),
+  T('where the sun',200,306,{f:F.ama,s:44,c:C.plum,w:700,ls:2}),
+  T('finds you',200,344,{f:F.ama,s:44,c:C.plum,w:700,ls:2}),
+  g(48,372,.9,-10,flower(C.pink)),g(92,380,.7,8,daisy()),g(320,378,.75,0,flower(C.lav)),g(360,368,.9,12,flower(C.coral)),
+  g(26,350,.6,-20,sprig(C.leaf2,3)),g(382,352,.6,20,sprig(C.leaf2,3))])},
+// 2
+{bg:'#D3EAF8',ink:C.plum,art:()=>L([
+  g(200,190,1,0,rainbow(['#F7A8B8','#FFC9A8','#FFE69A','#BFE6C6','#B9D6F2','#D4C5F0'],128,15)),
+  g(78,190,1.05,0,A.bob(cloud('#fff',1),4,3)),g(322,190,1.05,0,A.bob(cloud('#fff',1),4,3,-1.5)),
+  g(60,60,.6,0,sparkle('#fff')),g(345,58,.8,0,sparkle('#fff')),g(300,110,.5,0,sparkle('#fff')),
+  T('today is a',200,248,{f:F.cav,s:38,c:C.plum,w:700}),
+  T('GOOD DAY',200,302,{f:F.shr,s:58,c:'#F08A7E',st:'#fff',sw:10}),
+  T('for a good day',200,356,{f:F.sac,s:58,c:C.plum})])},
+// 3
+{bg:'#CDEFE0',ink:C.teal,art:()=>L([
+  confetti(23,34,[C.rose,C.blue,C.lemon,C.plum,C.apricot],[[24,80,240,320]]),
+  g(300,180,1.6,8,iceCream()),
+  T('be the',36,118,{a:'start',f:F.cav,s:42,c:C.teal,w:700,max:220}),
+  T('sprinkles',30,186,{a:'start',f:F.pac,s:52,c:C.deepRose,st:'#fff',sw:9,max:232}),
+  T('on someone’s',36,238,{a:'start',f:F.ama,s:44,c:C.teal,w:700,max:220}),
+  T('ice cream',34,300,{a:'start',f:F.shr,s:46,c:C.plum,max:226})])},
+// 4
+{bg:'#E3D9F6',ink:C.plum,art:()=>L([
+  dotsGrid('#fff',28,2.2,.6),
+  T('little by little',200,86,{f:F.sac,s:64,c:C.plum}),
+  T('a little becomes',200,138,{f:F.ama,s:44,c:C.ink,w:700,ls:1}),
+  T('A LOT',200,204,{f:F.bun,s:58,c:C.teal,st:'#fff',sw:8}),
+  g(90,330,.8,0,plant('#F7B6C8',1)),g(200,330,.95,0,plant('#FFD39A',3)),g(310,322,1.1,0,plant('#A9D8E8',5)),
+  `<path d="M20 372 H380" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".7"/>`])},
+// 5
+{bg:'#FFE0CC',ink:C.deepRose,art:()=>L([
+  confetti(5,14,['#fff',C.rose],[[60,40,340,350]]),
+  T('pour yourself',200,72,{f:F.dan,s:48,c:C.deepRose}),
+  g(200,210,1.75,0,teacup('#F7B6C8')),
+  g(70,170,.6,-15,flower('#fff',C.apricot)),g(335,240,.5,15,flower(C.lav)),
+  T('a cup of',200,318,{f:F.ama,s:38,c:C.ink,w:700,ls:3}),
+  T('calm',200,370,{f:F.abr,s:56,c:C.plum})])},
+// 6
+{bg:'#D6ECFA',ink:C.blue,art:()=>L([
+  g(80,112,1.3,-6,A.bob(balloon('#F7A8B8','#FFE69A'),8,4)),g(320,82,.95,8,A.bob(balloon('#BFE6C6','#fff'),8,4,-1.3)),g(352,312,.6,-4,A.bob(balloon('#D4C5F0','#FFC9A8'),8,4,-2.6)),
+  g(70,320,.9,0,cloud()),g(240,48,.6,0,cloud()),g(150,380,.7,0,cloud()),
+  T('look how',214,186,{f:F.cav,s:42,c:C.ink,w:700,max:260}),
+  T('high',214,268,{f:F.shr,s:90,c:'#F08A7E',st:'#fff',sw:10,max:260}),
+  T('you can float',210,322,{f:F.sac,s:56,c:C.plum,max:250})])},
+// 7
+{bg:'#FADBE4',ink:C.deepRose,art:()=>L([
+  confetti(77,22,['#fff','#F49BB2',C.lemon],[[90,40,310,350]]),
+  T('somebody smiles',200,78,{f:F.pac,s:40,c:C.deepRose}),
+  g(200,215,3.4,0,heart('#F48A9E')),g(200,215,3.4,0,`<path d="M-12 -14 q-8 2 -10 10" stroke="#fff" stroke-width="2" fill="none" opacity=".6" stroke-linecap="round"/>`),
+  kawaii(200,200,1.5,'#fff'),
+  g(70,170,.9,-15,heart('#fff')),g(330,150,.7,20,heart(C.lemon)),g(320,260,.6,-10,heart('#fff')),
+  T('because of you',200,346,{f:F.cav,s:50,c:C.plum,w:700})])},
+// 8
+{bg:'#FFF1B8',ink:C.rose,art:()=>L([
+  dotsGrid('#FFD98A',30,4,.55),
+  T('stay sweet',200,96,{f:F.lob,s:60,c:C.deepRose,st:'#fff',sw:8}),
+  T('& stay silly',200,160,{f:F.che,s:50,c:C.teal,st:'#fff',sw:8}),
+  g(112,262,1.7,-6,cupcake('#BFE6F0','#FFC9DA')),g(290,262,1.7,6,cupcake('#F7B6C8','#FFF8EE')),
+  g(200,330,.8,0,sparkle(C.plum)),g(200,230,.6,0,sparkle(C.rose))])},
+// 9
+{bg:'#C9CFF3',ink:C.plum,art:()=>L([
+  confetti(9,30,['#fff','#FFE9A8'],[[40,170,360,320]]),
+  g(300,100,1.5,-20,moon('#FFE9A8')),g(110,90,1,0,A.blink(star('#fff',16),1.8)),g(170,60,1,0,A.blink(star('#FFE9A8',9),1.4,-.7)),g(70,350,1,0,A.blink(sparkle('#fff'),2,-1.2)),
+  T('shine',200,250,{f:F.pac,s:96,c:'#fff',st:C.plum,sw:12}),
+  T('like you mean it',200,312,{f:F.ama,s:46,c:C.ink,w:700,ls:2}),
+  g(70,350,1,0,star('#FFE9A8',10)),g(330,360,1,0,sparkle('#fff'))])},
+// 10
+{bg:'#E9DDF7',ink:C.plum,art:()=>L([
+  confetti(10,16,['#fff','#FFE9A8'],[[30,40,370,180]]),
+  T('dream big',200,86,{f:F.shr,s:56,c:C.plum,st:'#fff',sw:9}),
+  T('nap often',200,148,{f:F.sac,s:62,c:C.deepRose}),
+  g(205,300,2.1,0,cloud('#fff')),g(215,262,1.25,0,cat()),
+  A.rise(T('z',300,236,{f:F.cav,s:30,c:C.plum,w:700}),18,3),A.rise(T('z',322,212,{f:F.cav,s:38,c:C.plum,w:700}),18,3,-1),A.rise(T('Z',348,186,{f:F.cav,s:46,c:C.plum,w:700}),18,3,-2),
+  g(66,240,.8,-20,moon('#FFE9A8')),g(350,280,.8,0,star('#FFE9A8',10))])},
+// 11
+{bg:'#EAF6D3',ink:C.teal,art:()=>L([
+  g(70,70,1,-20,lemon()),g(330,64,.8,0,lemonSlice()),g(350,330,1.1,25,lemon()),g(60,330,.9,0,lemonSlice()),g(150,360,.55,0,lemonSlice()),g(250,58,.5,0,lemonSlice('#F5C451')),
+  g(240,370,.5,30,leaf(C.leaf2)),g(130,52,.5,-40,leaf(C.leaf)),
+  T('let it be',200,168,{f:F.cav,s:48,c:C.teal,w:700}),
+  T('lemonade',200,240,{f:F.pac,s:66,c:'#E9A23B',st:'#FFFBE6',sw:12}),
+  g(200,290,.7,0,sparkle('#E9A23B'))])},
+// 12
+{bg:'#FFE3E3',ink:C.teal,art:()=>L([
+  dotsGrid('#fff',24,2,.8),
+  g(80,90,1,-25,melon()),g(330,80,.8,20,melon()),g(330,330,1.1,-15,melon()),g(70,340,.8,15,melon()),
+  T('you’re',200,140,{f:F.cav,s:42,c:C.ink,w:700}),
+  T('one in a',200,196,{f:F.ama,s:52,c:C.ink,w:700,ls:2}),
+  T('MELON',200,272,{f:F.bun,s:70,c:'#6FB58A',st:'#fff',sw:10})])},
+// 13
+{bg:'#FFF4C2',ink:C.ink,art:()=>{let hex='';for(let y=0;y<420;y+=34)for(let x=(y/34%2)*20;x<420;x+=40)hex+=`<path d="M${x} ${y-12} l10 6 v12 l-10 6 l-10 -6 v-12Z" fill="none" stroke="#F8DE8C" stroke-width="2"/>`;return L([hex,
+  `<path d="M40 330 C100 260 60 200 130 180 S 250 120 330 90" stroke="${C.ink}" stroke-width="2" stroke-dasharray="4 7" fill="none" opacity=".45"/>`,
+  g(340,82,1.3,-10,A.bob(bee(),6,1.2)),g(56,334,1,15,A.bob(bee(),5,1,-.4)),g(330,320,.8,0,A.bob(bee(),5,1.4,-.8)),
+  T('bee kind',200,150,{f:F.fred,w:700,s:50,c:'#E9A23B',st:'#fff',sw:8}),
+  T('bee brave',200,222,{f:F.pac,s:46,c:C.plum,st:'#fff',sw:8}),
+  T('bee you',200,300,{f:F.shr,s:58,c:C.deepRose,st:'#fff',sw:8}),
+  g(140,380,.6,0,flower('#fff',C.lemon)),g(260,384,.5,0,flower(C.pink))]);}},
+// 14
+{bg:'#D5F0E3',ink:C.teal,art:()=>L([
+  g(200,200,1,0,wreath(130,34,[C.leaf,C.leaf2,'#A9D8B8'],[[-90,C.pink],[-30,'#fff'],[30,C.lav],[90,'#fff'],[150,C.coral],[210,'#fff']])),
+  T('happiness',200,180,{f:F.dan,s:52,c:C.deepRose,max:220}),
+  T('looks good',200,228,{f:F.ama,s:46,c:C.teal,w:700,ls:2,max:210}),
+  T('on you',200,278,{f:F.pac,s:40,c:C.plum,max:200}),
+  g(200,108,.6,0,sparkle('#fff'))])},
+// 15
+{bg:'#FFDCC7',ink:C.plum,art:()=>L([
+  confetti(15,16,['#fff',C.rose,C.plum],[[30,60,370,240]]),
+  T('let your heart',200,100,{f:F.cav,s:50,c:C.plum,w:700}),
+  T('DANCE',200,206,{f:F.shr,s:92,c:'#F08A7E',st:'#fff',sw:12,r:-5}),
+  g(300,312,1.25,-10,A.spin(vinyl(C.pink),5)),
+  g(70,320,1.2,-10,A.bob(note(C.plum),8,2)),g(140,290,.8,10,A.bob(note(C.rose),8,2,-1)),g(170,360,.7,0,heart(C.rose)),g(60,250,.6,0,heart('#fff'))])},
+// 16
+{bg:'#D3EBFA',ink:C.blue,art:()=>L([
+  g(90,90,1.3,0,cloud('#fff',2)),g(300,70,1,0,cloud('#fff',1)),g(310,330,1.4,0,cloud('#fff',2)),g(90,330,.9,0,cloud('#fff',1)),
+  T('every cloud',200,200,{f:F.ama,s:58,c:C.plum,w:700,ls:3}),
+  T('has a silly face',200,256,{f:F.pac,s:38,c:C.deepRose,st:'#fff',sw:8}),
+  g(200,150,.7,0,sparkle('#fff')),g(40,210,.5,0,sparkle('#fff')),g(370,200,.6,0,sparkle('#fff'))])},
+// 17
+{bg:'#DCEFD6',ink:C.teal,art:()=>L([
+  dotsGrid('#fff',30,2.2,.7),
+  T('keep growing',200,86,{f:F.abr,s:48,c:C.teal}),
+  T('softly',200,152,{f:F.sac,s:78,c:C.deepRose}),
+  g(190,300,1.12,0,A.sway(giraffe(),2,5,0,74)),
+  g(80,300,.8,-10,flower(C.lav)),g(320,290,.8,10,flower(C.pink)),g(110,360,.6,0,daisy()),g(300,360,.6,0,daisy('#fff',C.apricot))])},
+// 18
+{bg:'#DDE3FA',ink:C.plum,art:()=>L([
+  `<path d="M40 340 C120 300 90 220 170 220 S 300 180 340 90" stroke="${C.plum}" stroke-width="2" stroke-dasharray="4 7" fill="none" opacity=".4"/>`,
+  g(346,82,1.4,15,A.flap(butterfly('#F7A8B8','#FFE69A'),.6)),g(70,110,1,-15,A.flap(butterfly('#BFE6C6','#B9D6F2'),.5,-.2)),g(48,342,1.4,0,bird('#FFC9A8')),
+  T('wings',200,200,{f:F.lob,s:92,c:C.plum,st:'#fff',sw:10}),
+  T('were made for trying',200,262,{f:F.cav,s:40,c:C.ink,w:700}),
+  g(300,330,.9,0,cloud('#fff')),g(200,330,.5,0,sparkle('#fff'))])},
+// 19
+{bg:'#CDEFF0',ink:C.teal,art:()=>L([
+  g(320,250,1,0,sun('#FFE07A','#FFC9A8',false)),
+  wave(268,'#A6DCE6',10,60,0),wave(300,'#8FCFDC',12,70,20),wave(340,'#7FC0D4',10,56,8),
+  g(90,370,.6,0,star('#FFC9A8',12)),g(250,372,.8,0,`<circle r="5" fill="#fff" opacity=".7"/><circle cx="12" cy="-10" r="3" fill="#fff" opacity=".7"/>`),
+  T('breathe in',200,104,{f:F.ama,s:60,c:C.teal,w:700,ls:3}),
+  T('the good stuff',200,172,{f:F.pac,s:46,c:C.deepRose,st:'#fff',sw:8}),
+  g(60,60,.6,0,sparkle('#fff')),g(340,50,.5,0,sparkle('#fff'))])},
+// 20
+{bg:'#FCD9E6',ink:C.deepRose,art:()=>L([
+  confetti(20,60,['#fff',C.lemon,C.teal,C.plum,'#F08A7E',C.blue],[[60,90,340,330]],1.1),
+  T('choose',200,138,{f:F.fred,w:700,s:52,c:C.plum,ls:4}),
+  T('JOY',200,252,{f:F.shr,s:116,c:'#F7CF5B',st:'#fff',sw:14,r:-3}),
+  T('then choose it again',200,312,{f:F.cav,s:40,c:C.plum,w:700})])},
+// 21
+{bg:'#FFEBC9',ink:C.plum,art:()=>L([
+  g(70,190,.7,0,sun('#FFE07A',C.apricot,false)),g(330,150,.7,0,cloud('#fff')),
+  mountains(),
+  T('you’re doing better',200,72,{f:F.ama,s:48,c:C.plum,w:700,ls:2}),
+  T('than you think',200,126,{f:F.pac,s:42,c:C.deepRose,st:'#fff',sw:8})])},
+// 22
+{bg:'#F6DDF0',ink:C.plum,art:()=>L([
+  confetti(22,14,['#fff',C.rose],[[60,60,340,380]]),
+  g(200,176,2.4,-12,donut('#F6DDF0')),
+  T('life is short,',200,322,{f:F.cav,s:46,c:C.plum,w:700}),
+  T('eat the donut',200,372,{f:F.shr,s:46,c:C.deepRose,st:'#fff',sw:8})])},
+// 23
+{bg:'#D9E4F2',ink:C.blue,art:()=>{const R=rng(23);let d='';for(let i=0;i<24;i++){const x=R()*400,y=R()*150+10;if(x>140&&x<260&&y>40)continue;d+=g(x.toFixed(0),y.toFixed(0),.8,0,A.fall(drop(R()<.5?'#A8C8EC':'#fff'),40,1.8,-(R()*1.8).toFixed(2)));}return L([d,
+  g(200,110,1.3,-8,umbrella('#F7A8B8','#FFE69A')),
+  T('rainy days',200,232,{f:F.pac,s:52,c:C.plum,st:'#fff',sw:8}),
+  T('grow flowers too',200,282,{f:F.ama,s:46,c:C.ink,w:700,ls:2}),
+  g(60,380,1,0,tulip('#F7A8B8')),g(120,388,.8,0,tulip('#FFC9A8')),g(290,388,.85,0,tulip(C.lav)),g(350,380,1,0,tulip('#FFE69A')),
+  g(200,370,.8,0,flower('#fff',C.lemon))]);}},
+// 24
+{bg:'#FFF0C9',ink:C.plum,art:()=>{let rays='';for(let i=0;i<24;i++)rays+=`<path d="M200 205 L${(200+300*Math.cos(i*Math.PI/12)).toFixed(0)} ${(205+300*Math.sin(i*Math.PI/12)).toFixed(0)} L${(200+300*Math.cos((i+.5)*Math.PI/12)).toFixed(0)} ${(205+300*Math.sin((i+.5)*Math.PI/12)).toFixed(0)}Z" fill="#FFE3A0" opacity=".6"/>`;return L([rays,
+  confetti(24,26,[C.rose,C.plum,C.teal,'#fff'],[[40,100,360,300]]),
+  T('be a',200,140,{f:F.cav,s:44,c:C.plum,w:700}),
+  T('little bit',200,200,{f:F.dan,s:58,c:C.deepRose}),
+  T('EXTRA',200,282,{f:F.bun,s:72,c:'#B79BE8',st:'#fff',sw:10}),
+  g(64,96,1.3,0,sparkle(C.rose)),g(340,300,1.5,0,sparkle(C.plum)),g(330,90,1,0,star(C.teal,12))]);}},
+// 25
+{bg:'#FFE3D2',ink:C.plum,art:()=>L([
+  confetti(25,14,['#fff',C.rose],[[40,40,360,330]]),
+  g(200,80,1.6,0,bird('#B9D6F2')),
+  T('hello,',200,172,{f:F.pac,s:58,c:C.deepRose}),
+  g(200,236,1,0,ribbon(240,'#F7B6C8','#E79BB0')),
+  T('lovely human',200,252,{f:F.ama,s:46,c:'#fff',w:700,ls:2,max:230}),
+  g(70,340,.8,-10,flower(C.lav)),g(330,340,.8,10,flower('#fff',C.apricot)),
+  T('you make the world softer',200,330,{f:F.cav,s:26,c:C.plum,w:500,max:220})])},
+
+/* ---- recipes ---- */
+{type:'recipe',bg:'#FDE0E6',ink:C.plum,label:'cold & fruity',title:'Strawberry Cloud Cooler',
+  art:()=>L([g(84,276,1.4,0,glass('#F7A0AF','#fff')),g(46,190,.6,-20,strawberry()),g(130,366,.55,10,strawberry()),g(108,206,.45,0,sparkle(C.rose))]),
+  ing:['1 cup frozen strawberries','1 cup cold milk (any kind)','1 tbsp honey','a handful of ice'],
+  how:['Blend it all until fluffy','and pink. Pour into your','prettiest glass. Sip & smile!']},
+{type:'recipe',bg:'#FFF2C2',ink:C.plum,label:'2 ingredients!',title:'Mango Snow',
+  art:()=>L([g(90,286,1.3,0,bowl('#B9D6F2','#FFCE6E')),g(56,196,.5,0,sparkle('#E9A23B')),g(126,190,.4,0,leaf(C.leaf2))]),
+  ing:['2 cups frozen mango chunks','½ cup plain yogurt','(optional) a squeeze of lime'],
+  how:['Blitz until it looks like','soft-serve. Scoop and eat','right away — it melts fast!']},
+{type:'recipe',bg:'#EADFF7',ink:C.plum,label:'no-bake sweets',title:'Choco-Oat Bites',
+  art:()=>L([g(92,292,1.3,0,bites()),g(50,200,.6,0,heart(C.rose)),g(130,208,.5,0,sparkle(C.plum))]),
+  ing:['1 cup rolled oats','½ cup peanut butter','⅓ cup honey','⅓ cup choc chips'],
+  how:['Stir everything together,','roll into little balls and','chill for 30 minutes. Done!']},
+{type:'recipe',bg:'#D9F2E4',ink:C.teal,label:'cold & fizzy',title:'Watermelon Mint Fizz',
+  art:()=>L([g(84,280,1.4,0,glass('#F7A0AF','#FFDCE3')),g(60,196,.55,-10,melon()),g(132,190,.5,40,leaf(C.leaf2)),g(140,370,.5,0,lemonSlice('#A5D86E'))]),
+  ing:['2 cups watermelon cubes','juice of 1 lime','a few mint leaves','sparkling water'],
+  how:['Blend melon + lime, then','pour over ice. Top with fizz','and a mint leaf. Cheers!']},
+
+/* ---- playlists ---- */
+{type:'list',bg:'#D5F0E3',ink:C.teal,label:'happy playlist',title:'Sunny Side Up',icon:()=>g(352,62,.62,0,vinyl('#FFE07A')),
+  items:['Here Comes the Sun — The Beatles','Walking on Sunshine — Katrina & The Waves','Lovely Day — Bill Withers','September — Earth, Wind & Fire','Happy — Pharrell Williams','Three Little Birds — Bob Marley','Dancing Queen — ABBA','Good as Hell — Lizzo'],numbered:true,cols:1},
+{type:'list',bg:'#FFE0CC',ink:C.plum,label:'happy playlist',title:'Kitchen Dance Party',icon:()=>g(352,62,.62,0,vinyl('#F7B6C8')),
+  items:['Don’t Stop Me Now — Queen','I Wanna Dance with Somebody — Whitney Houston','Mr. Blue Sky — Electric Light Orchestra','Signed, Sealed, Delivered — Stevie Wonder','Shake It Off — Taylor Swift','Uptown Funk — Mark Ronson ft. Bruno Mars','Levitating — Dua Lipa','Can’t Stop the Feeling! — Justin Timberlake'],numbered:true,cols:1},
+
+/* ---- top ten ---- */
+{type:'list',bg:'#FFF1B8',ink:C.plum,label:'top ten',title:'10 Tiny Joys',icon:()=>g(352,60,.9,0,heart(C.rose)),
+  items:['Fresh clean sheets','The first cold sip','Money in an old pocket','A song you forgot you loved','Dogs on a walk','Sunlight on the floor','New stationery','A really good sandwich','Laughing till you snort','Happy mail'],numbered:true,cols:2},
+{type:'list',bg:'#E3D9F6',ink:C.plum,label:'top ten',title:'10 Ways to Brighten a Day',icon:()=>g(352,60,.7,0,sun('#FFE07A',C.apricot,false)),
+  items:['Wear your fave color','Text an old friend','Dance in the kitchen','Leave a kind note','Water a plant','Eat dessert first','Take the long way','Doodle something silly','Compliment a stranger','Watch the sunset'],numbered:true,cols:2},
+
+/* ---- crafts ---- */
+{type:'craft',wide:true,bg:'#FFF8EE',ink:C.plum,label:'crafty project',title:'Paper Rainbow Garland',
+  art:()=>garland(118,['#F7A8B8','#FFC9A8','#FFE69A','#BFE6C6','#B9D6F2','#D4C5F0']),
+  steps:['Cut pastel paper into thin strips','Loop one strip into a ring & tape it','Thread the next strip through, repeat','Make it as long as you like','Hang it somewhere sunny!']},
+{type:'craft',bg:'#E8F4DC',ink:C.teal,label:'crafty project',title:'Pressed Flower Bookmark',
+  art:()=>g(350,250,.95,8,bookmark()),
+  steps:['Press tiny flowers in a heavy book','Wait one week (the hardest part!)','Arrange them on a strip of card','Cover with clear tape to seal','Punch a hole, add a ribbon']},
+];
+
+/* ============ little animation helpers (SVG, loop forever) ============ */
+const SPL='calcMode="spline" keyTimes="0;.5;1" keySplines=".45 0 .55 1;.45 0 .55 1"';
+const A={
+  bob:(i,dy=6,dur=3,d=0)=>`<g>${i}<animateTransform attributeName="transform" type="translate" values="0 0;0 ${-dy};0 0" dur="${dur}s" begin="${d}s" repeatCount="indefinite" ${SPL}/></g>`,
+  spin:(i,dur=8)=>`<g>${i}<animateTransform attributeName="transform" type="rotate" values="0;360" dur="${dur}s" repeatCount="indefinite"/></g>`,
+  sway:(i,deg=5,dur=3,cx=0,cy=0,d=0)=>`<g>${i}<animateTransform attributeName="transform" type="rotate" values="${-deg} ${cx} ${cy};${deg} ${cx} ${cy};${-deg} ${cx} ${cy}" dur="${dur}s" begin="${d}s" repeatCount="indefinite" ${SPL}/></g>`,
+  pulse:(i,k=1.08,dur=1.6)=>`<g>${i}<animateTransform attributeName="transform" type="scale" values="1;${k};1" dur="${dur}s" repeatCount="indefinite" ${SPL}/></g>`,
+  blink:(i,dur=2,d=0,min=.15)=>`<g>${i}<animate attributeName="opacity" values="1;${min};1" dur="${dur}s" begin="${d}s" repeatCount="indefinite"/></g>`,
+  flap:(i,dur=.5,d=0)=>`<g>${i}<animateTransform attributeName="transform" type="scale" values="1 1;.55 1;1 1" dur="${dur}s" begin="${d}s" repeatCount="indefinite"/></g>`,
+  drift:(i,dx,dy,dur=4,d=0)=>`<g opacity="0">${i}<animateTransform attributeName="transform" type="translate" values="0 0;${dx} ${dy}" dur="${dur}s" begin="${d}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.2;.75;1" dur="${dur}s" begin="${d}s" repeatCount="indefinite"/></g>`,
+};
+A.rise=(i,h=40,dur=3,d=0)=>A.drift(i,0,-h,dur,d);
+A.fall=(i,h=40,dur=2,d=0)=>A.drift(i,0,h,dur,d);
+const steam=(n=3,gap=14,h=22)=>Array.from({length:n},(_,i)=>g(i*gap-(n-1)*gap/2,0,1,0,A.rise(`<path d="M0 0 c-6 -6 6 -12 0 -18" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/>`,h,2.6,-i*.9))).join('');
+
+/* ============ one-of-a-kind illustrations ============ */
+const ladybug=()=>`<path d="M-62 22 C-30 -18 40 -20 62 8 C34 40 -30 46 -62 22Z" fill="#9BD3A6"/><path d="M-58 22 C-20 12 20 8 58 9" stroke="#fff" stroke-opacity=".55" stroke-width="2" fill="none"/>`+g(0,-2,1,-8,A.bob(`<path d="M-26 -8 q-6 -10 -12 -12 M-22 -10 q-2 -10 -8 -14" stroke="${C.ink}" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="-20" cy="0" r="10" fill="${C.ink}"/><circle cx="-23" cy="-3" r="2" fill="#fff"/><ellipse cx="2" cy="0" rx="22" ry="18" fill="#F48A9E"/><path d="M2 -18 V18" stroke="${C.ink}" stroke-width="2"/><circle cx="-6" cy="-8" r="4" fill="${C.ink}"/><circle cx="12" cy="-6" r="4" fill="${C.ink}"/><circle cx="-4" cy="8" r="3.5" fill="${C.ink}"/><circle cx="14" cy="9" r="3" fill="${C.ink}"/><ellipse cx="-2" cy="-12" rx="6" ry="3" fill="#fff" opacity=".4"/>`,3,2))+g(46,-12,.5,0,flower('#fff',C.lemon))+g(-44,-6,.4,0,daisy('#fff',C.apricot));
+const lighthouse=()=>A.blink(`<path d="M12 -40 L52 -56 L52 -24Z" fill="#FFF8D0" opacity=".95"/><path d="M-12 -40 L-40 -54 L-40 -26Z" fill="#FFF8D0" opacity=".8"/>`,2.4,0,.25)+`<ellipse cx="0" cy="56" rx="42" ry="11" fill="#B8B3D9"/><path d="M-18 52 L-12 -30 L12 -30 L18 52Z" fill="#fff"/><path d="M-16.6 32 L16.6 32 L15.4 16 L-15.4 16Z M-14.3 -2 L14.3 -2 L13.3 -16 L-13.3 -16Z" fill="#F48A9E"/><rect x="-17" y="-32" width="34" height="5" rx="2" fill="${C.plum}"/><rect x="-12" y="-46" width="24" height="14" rx="3" fill="#FFE69A"/><path d="M-16 -46 L0 -62 L16 -46Z" fill="#F48A9E"/><circle cx="0" cy="-64" r="3" fill="${C.plum}"/><rect x="-4" y="38" width="8" height="14" rx="4" fill="${C.plum}" opacity=".6"/>`;
+function hedgehog(){const pts=[];for(let i=0;i<=22;i++){const a=(150+i*11)*Math.PI/180,r=i%2?32:46;pts.push((Math.cos(a)*r).toFixed(1)+','+(Math.sin(a)*r*.8+6).toFixed(1));}
+  return `<polygon points="${pts.join(' ')} 30,24 -34,26" fill="#BFA08A" stroke="#BFA08A" stroke-width="3" stroke-linejoin="round"/><ellipse cx="0" cy="14" rx="34" ry="22" fill="#E2C2A6"/><ellipse cx="30" cy="16" rx="18" ry="14" fill="#FFE6D2"/><circle cx="47" cy="13" r="4" fill="${C.ink}"/><path d="M28 9 q3 -3 6 0" stroke="${C.ink}" stroke-width="2.2" fill="none" stroke-linecap="round"/><ellipse cx="34" cy="21" rx="4" ry="2.4" fill="#F49BB2"/><ellipse cx="-16" cy="36" rx="7" ry="4" fill="#C9A58A"/><ellipse cx="16" cy="36" rx="7" ry="4" fill="#C9A58A"/>`+g(-10,-30,.45,-10,flower('#F7A8B8',C.lemon))+g(8,-36,.35,10,leaf(C.leaf));}
+const mirror=()=>`<rect x="-7" y="40" width="14" height="44" rx="7" fill="${C.tan}"/><circle cx="0" cy="86" r="8" fill="${C.tan}"/>${[0,45,90,135,180,225,270,315].map(a=>`<circle cx="${(Math.cos(a*Math.PI/180)*42).toFixed(1)}" cy="${(Math.sin(a*Math.PI/180)*50).toFixed(1)}" r="7" fill="#F7B6C8"/>`).join('')}<ellipse cx="0" cy="0" rx="42" ry="50" fill="#F7B6C8"/><ellipse cx="0" cy="0" rx="33" ry="41" fill="#E6F4FA"/><path d="M-20 -22 L-8 -34 M-24 -6 L2 -34" stroke="#fff" stroke-width="4" stroke-linecap="round"/>`+kawaii(0,8,.9)+A.blink(g(30,-40,.7,0,sparkle('#F5C451')),1.6)+A.blink(g(-34,-44,.5,0,sparkle('#fff')),2,-.8);
+const fruitBasket=()=>`<path d="M-42 -8 C-42 -66 42 -66 42 -8" stroke="#D9A46A" stroke-width="6" fill="none"/><circle cx="-24" cy="-14" r="15" fill="#F48A9E"/><circle cx="-29" cy="-19" r="4" fill="#fff" opacity=".5"/><circle cx="4" cy="-20" r="16" fill="#FFC27A"/><circle cx="26" cy="-12" r="14" fill="#BFE6C6"/>`+g(4,-36,.4,20,leaf(C.leaf2))+[[-8,-30],[-14,-26],[-4,-24]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#C9B6EA"/>`).join('')+`<path d="M-50 -6 L50 -6 L40 34 L-40 34Z" fill="#EBC491"/><path d="M-46 6 H46 M-43 20 H43" stroke="#D9A46A" stroke-width="2"/>${[-30,-15,0,15,30].map(x=>`<path d="M${x} -6 L${(x*.8).toFixed(0)} 34" stroke="#D9A46A" stroke-width="2"/>`).join('')}<rect x="-54" y="-12" width="108" height="10" rx="5" fill="#D9A46A"/>`;
+const magnifier=()=>g(-44,34,.55,0,flower(C.pink))+g(-62,46,.45,0,sprig(C.leaf2,2))+g(-24,44,.35,0,daisy())+A.bob(`<rect x="34" y="14" width="13" height="42" rx="6.5" fill="#B79BE8" transform="rotate(-45 40 34)"/><circle cx="0" cy="-6" r="32" fill="#fff" opacity=".5"/>`+g(0,-6,1.25,0,flower(C.pink))+`<circle cx="0" cy="-6" r="32" fill="none" stroke="#B79BE8" stroke-width="7"/><path d="M-20 -22 a24 24 0 0 1 14 -8" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>`,5,3.2);
+const suitcase=()=>`<path d="M-16 -30 V-42 Q-16 -48 -10 -48 H10 Q16 -48 16 -42 V-30" stroke="${C.plum}" stroke-width="5" fill="none"/><rect x="-50" y="-30" width="100" height="66" rx="10" fill="#B9D6F2"/><rect x="-32" y="-30" width="8" height="66" fill="#fff" opacity=".5"/><rect x="24" y="-30" width="8" height="66" fill="#fff" opacity=".5"/>`+g(-8,6,.75,0,heart(C.rose))+g(38,14,.5,0,star('#FFE69A',12))+g(-38,18,.45,0,flower('#fff',C.apricot))+`<rect x="4" y="-22" width="22" height="14" rx="3" fill="#FFC9A8" transform="rotate(8 15 -15)"/><circle cx="-38" cy="40" r="5" fill="${C.plum}"/><circle cx="38" cy="40" r="5" fill="${C.plum}"/>`;
+const kettle=()=>`<path d="M-24 -24 C-20 -58 20 -58 24 -24" stroke="${C.plum}" stroke-width="5" fill="none"/><path d="M30 2 C46 -2 52 -14 58 -24 L62 -18 C56 -4 48 10 36 16Z" fill="#F7B6C8"/><path d="M-40 32 C-44 -8 -24 -30 0 -30 C24 -30 44 -8 40 32Z" fill="#F7B6C8"/><ellipse cx="0" cy="-28" rx="18" ry="5" fill="#E79BB0"/><circle cx="0" cy="-35" r="5" fill="${C.plum}"/><rect x="-44" y="28" width="88" height="8" rx="4" fill="#E79BB0"/><path d="M-26 -8 q8 -12 22 -14" stroke="#fff" stroke-width="4" opacity=".5" fill="none" stroke-linecap="round"/>`+kawaii(0,8,.9)+g(64,-30,1,0,steam(3,9,26));
+const duck=()=>A.bob(`<path d="M-34 4 C-52 -8 -54 10 -40 16Z" fill="#FFE07A"/><ellipse cx="0" cy="12" rx="40" ry="24" fill="#FFE07A"/><circle cx="16" cy="-18" r="20" fill="#FFE07A"/><ellipse cx="38" cy="-14" rx="13" ry="6" fill="#FFB06A"/><circle cx="22" cy="-24" r="3" fill="${C.ink}"/><ellipse cx="22" cy="-13" rx="4" ry="2.5" fill="#F49BB2"/><path d="M-12 6 C-2 -4 18 2 14 16 C4 22 -10 16 -12 6Z" fill="#FFD24F"/>`,4,2.6)+`<path d="M-60 36 q8 -6 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0" stroke="#9FC6EA" stroke-width="3" fill="none" stroke-linecap="round"/>`+[[-46,10,6,0],[50,4,8,-1],[56,-30,5,-2]].map(([x,y,r,d])=>g(x,y,1,0,A.rise(`<circle r="${r}" fill="#fff" opacity=".7"/><circle cx="${-r*.3}" cy="${-r*.3}" r="${r*.3}" fill="#fff"/>`,30,3,d))).join('');
+const snowglobe=()=>`<path d="M-40 34 L40 34 L48 58 L-48 58Z" fill="#F7B6C8"/><rect x="-52" y="54" width="104" height="10" rx="4" fill="#E79BB0"/><circle cx="0" cy="-6" r="46" fill="#E3F2FB"/><path d="M-43 8 C-20 0 20 0 43 8 L33 26 C20 38 -20 38 -33 26Z" fill="#fff"/><rect x="-22" y="-6" width="28" height="20" fill="#FFC9A8"/><path d="M-26 -6 L-8 -22 L10 -6Z" fill="#F48A9E"/><rect x="-11" y="4" width="8" height="10" fill="#B58A72"/><rect x="0" y="-1" width="6" height="6" fill="#FFF3B0"/><path d="M14 10 L22 -8 L30 10Z M16 2 L22 -14 L28 2Z" fill="#8CC59A"/>`+[[-30,-40],[-8,-46],[16,-38],[30,-24],[-20,-26],[4,-30],[-34,-14],[24,-48]].map(([x,y],i)=>g(x,y,1,0,A.fall(`<circle r="2.4" fill="#fff"/>`,34,3.2,-i*.4))).join('')+`<circle cx="0" cy="-6" r="46" fill="none" stroke="#fff" stroke-width="3"/><path d="M-30 -32 A40 40 0 0 1 -6 -48" stroke="#fff" stroke-width="5" fill="none" opacity=".9" stroke-linecap="round"/>`;
+const wateringCan=()=>g(-16,0,1,0,g(0,0,1,-12,`<path d="M30 -6 L62 -30 L66 -24 L36 4Z" fill="#9FC6EA"/><ellipse cx="66" cy="-29" rx="6" ry="9" fill="#9FC6EA" transform="rotate(-35 66 -29)"/><path d="M-30 -30 C-30 -54 26 -54 26 -30" stroke="#7FA7D9" stroke-width="6" fill="none"/><rect x="-38" y="-30" width="72" height="56" rx="12" fill="#B9D6F2"/>`+g(-2,-2,.8,0,flower('#fff',C.lemon)))+[[62,-6],[70,-2],[78,-8],[66,6]].map(([x,y],i)=>g(x,y,.7,0,A.fall(drop('#9FC6EA'),40,1.4,-i*.35))).join('')+g(60,60,.6,0,flower('#F7A8B8'))+g(84,58,.5,0,daisy())+g(40,64,.4,0,sprig(C.leaf2,2)));
+const bear=()=>`<circle cx="-28" cy="-48" r="12" fill="#D9B08C"/><circle cx="28" cy="-48" r="12" fill="#D9B08C"/><circle cx="-28" cy="-48" r="6" fill="#F7B6C8"/><circle cx="28" cy="-48" r="6" fill="#F7B6C8"/><ellipse cx="0" cy="38" rx="40" ry="30" fill="#D9B08C"/><circle cx="0" cy="-24" r="34" fill="#D9B08C"/><ellipse cx="0" cy="-12" rx="14" ry="10" fill="#F3DCC6"/><ellipse cx="0" cy="-15" rx="5" ry="3.5" fill="${C.ink}"/><circle cx="-13" cy="-30" r="3" fill="${C.ink}"/><circle cx="13" cy="-30" r="3" fill="${C.ink}"/><ellipse cx="-22" cy="-16" rx="5" ry="3" fill="#F49BB2"/><ellipse cx="22" cy="-16" rx="5" ry="3" fill="#F49BB2"/>`+g(0,36,1.55,0,A.pulse(heart('#F48A9E'),1.1,1.2))+`<ellipse cx="-26" cy="34" rx="10" ry="15" fill="#C99E7A" transform="rotate(35 -26 34)"/><ellipse cx="26" cy="34" rx="10" ry="15" fill="#C99E7A" transform="rotate(-35 26 34)"/>`;
+const lavaLamp=()=>`<path d="M-14 -62 L14 -62 L22 -40 L-22 -40Z" fill="${C.plum}"/><path d="M-22 -40 L22 -40 L32 30 L-32 30Z" fill="#FDE6EE"/>`+g(-4,14,1,0,A.bob(`<ellipse rx="11" ry="13" fill="#F7A8B8"/>`,42,6))+g(8,-14,1,0,A.bob(`<ellipse rx="8" ry="10" fill="#FFC9A8"/>`,-30,5,-2))+g(-10,-26,1,0,A.bob(`<ellipse rx="6" ry="7" fill="#C9B6EA"/>`,-24,4,-1))+`<ellipse cx="0" cy="26" rx="28" ry="6" fill="#F7A8B8"/><path d="M-14 -34 L-20 20" stroke="#fff" stroke-width="3" opacity=".7" stroke-linecap="round"/><path d="M-32 30 L32 30 L24 60 L-24 60Z" fill="${C.plum}"/><rect x="-30" y="58" width="60" height="8" rx="4" fill="#9C8BB5"/>`;
+const dandelion=()=>`<path d="M0 0 C-4 40 6 70 0 100" stroke="${C.leaf2}" stroke-width="4" fill="none"/>`+g(-4,82,.6,-50,leaf(C.leaf))+g(4,94,.5,50,leaf(C.leaf2))+Array.from({length:22},(_,i)=>{const a=i*Math.PI*2/22,x=Math.cos(a)*30,y=Math.sin(a)*30;return `<path d="M0 0 L${x.toFixed(1)} ${y.toFixed(1)}" stroke="#fff" stroke-width="1.4"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.6" fill="#fff"/>`;}).join('')+`<circle r="7" fill="#E8DCC0"/>`+[[30,-20,0],[22,-34,-1.2],[36,-6,-2.4],[14,-40,-3.4]].map(([x,y,d])=>g(x,y,1,0,A.drift(`<path d="M0 0 v8" stroke="#fff" stroke-width="1.4"/><circle r="3" fill="#fff"/>`,60,-50,4.5,d))).join('');
+const trophy=()=>A.blink(g(-50,-40,.8,0,sparkle('#F5C451')),1.4)+A.blink(g(52,-20,.6,0,sparkle(C.rose)),1.8,-.7)+`<path d="M-30 -36 C-52 -36 -50 -6 -24 -4 M30 -36 C52 -36 50 -6 24 -4" stroke="#F5C451" stroke-width="6" fill="none"/><path d="M-32 -44 L32 -44 C32 -6 18 6 0 8 C-18 6 -32 -6 -32 -44Z" fill="#FFD86A"/><path d="M-22 -38 C-22 -18 -14 -8 -6 -4" stroke="#fff" stroke-width="4" opacity=".55" fill="none" stroke-linecap="round"/><rect x="-6" y="6" width="12" height="18" fill="#F5C451"/><rect x="-24" y="24" width="48" height="10" rx="3" fill="#F5C451"/><rect x="-30" y="34" width="60" height="14" rx="4" fill="${C.plum}"/>`+g(0,-22,1,0,star('#fff',11));
+const sloth=()=>`<path d="M-80 -40 C-30 -48 30 -34 80 -42" stroke="#B58A72" stroke-width="8" fill="none" stroke-linecap="round"/>`+g(-54,-46,.5,-60,leaf(C.leaf))+g(62,-46,.5,50,leaf(C.leaf2))+g(-30,-46,.4,-20,leaf(C.leaf2))+A.sway(`<path d="M-22 -40 C-26 -20 -24 -4 -18 4 M22 -40 C26 -20 24 -4 18 4" stroke="#C9A58A" stroke-width="12" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="20" rx="30" ry="30" fill="#C9A58A"/><ellipse cx="0" cy="8" rx="22" ry="16" fill="#F3DCC6"/><ellipse cx="-9" cy="6" rx="7" ry="4.5" fill="#8A6A58" transform="rotate(-20 -9 6)"/><ellipse cx="9" cy="6" rx="7" ry="4.5" fill="#8A6A58" transform="rotate(20 9 6)"/><path d="M-12 6 q3 2 5 0 M7 6 q3 2 5 0" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="14" rx="3.5" ry="2.5" fill="${C.ink}"/><path d="M-4 18 q4 3 8 0" stroke="${C.ink}" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="-15" cy="15" rx="3.5" ry="2" fill="#F49BB2"/><ellipse cx="15" cy="15" rx="3.5" ry="2" fill="#F49BB2"/>`,4,4,0,-42)+g(40,-20,1,0,A.rise(`<text x="0" y="0" font-family="${F.cav}" font-weight="700" font-size="16" fill="${C.plum}">z</text>`,20,3))+g(48,-30,1,0,A.rise(`<text x="0" y="0" font-family="${F.cav}" font-weight="700" font-size="20" fill="${C.plum}">z</text>`,20,3,-1.5));
+const rosette=()=>`<path d="M-16 20 L-28 66 L-16 58 L-8 70 L0 24Z" fill="#9ED2B8"/><path d="M16 20 L28 66 L16 58 L8 70 L0 24Z" fill="#7FC4A4"/>`+Array.from({length:16},(_,i)=>`<circle cx="${(Math.cos(i*Math.PI/8)*34).toFixed(1)}" cy="${(Math.sin(i*Math.PI/8)*34).toFixed(1)}" r="10" fill="#F7A8B8"/>`).join('')+`<circle r="34" fill="#F7A8B8"/><circle r="26" fill="#FFF3F6"/>`+A.pulse(star('#F5C451',17),1.14,1.6);
+const noodleBowl=()=>g(-8,-40,1,0,steam(3,16,24))+`<rect x="10" y="-62" width="5" height="70" rx="2.5" fill="#D9A46A" transform="rotate(28 12 -27)"/><rect x="20" y="-60" width="5" height="70" rx="2.5" fill="#C88E57" transform="rotate(34 22 -25)"/><ellipse cx="0" cy="-4" rx="50" ry="10" fill="#FFE9B0"/><path d="M-40 -6 q6 -8 12 0 t12 0 t12 0 t12 0 t12 0 t12 0" stroke="#F3C98E" stroke-width="3" fill="none"/><ellipse cx="-18" cy="-8" rx="12" ry="7" fill="#fff"/><ellipse cx="-18" cy="-8" rx="5" ry="4" fill="#FFC94F"/><circle cx="14" cy="-8" r="7" fill="#F7A8B8"/><circle cx="14" cy="-8" r="3" fill="#fff"/><path d="M-4 -10 l6 -6 l4 6Z" fill="#8CC59A"/><path d="M-52 -4 L52 -4 C52 26 30 44 0 44 C-30 44 -52 26 -52 -4Z" fill="#B9D6F2"/><path d="M-40 14 h80" stroke="#fff" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" opacity=".8"/>`+kawaii(0,26,.7);
+const globe=()=>A.sway(`<circle r="46" fill="#B9D6F2"/><path d="M-30 -30 C-14 -40 4 -30 -2 -18 C-8 -6 -26 -10 -34 -2 C-42 -10 -40 -24 -30 -30Z M12 -40 C26 -38 42 -22 40 -8 C32 -14 24 -10 20 -18 C16 -26 6 -30 12 -40Z M-22 26 C-10 18 10 24 16 36 C6 44 -14 42 -24 34Z M28 14 C36 10 42 16 40 24 C34 26 28 22 28 14Z" fill="#A8DDB5"/><path d="M-14 -4 q4 -5 8 0 M6 -4 q4 -5 8 0" stroke="${C.ink}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M-11 6 Q0 22 11 6Z" fill="${C.ink}"/><path d="M-6 12 Q0 17 6 12" fill="#F48A9E"/><ellipse cx="-22" cy="4" rx="6" ry="3.5" fill="#F49BB2"/><ellipse cx="22" cy="4" rx="6" ry="3.5" fill="#F49BB2"/><circle r="46" fill="none" stroke="#fff" stroke-width="3" opacity=".7"/>`,5,4)+A.blink(g(-58,-34,.5,0,heart(C.rose)),1.8)+A.blink(g(60,-28,.4,0,heart(C.lemon)),2.2,-1)+A.blink(g(56,40,.35,0,heart('#fff')),2,-.5);
+const sunglasses=()=>`<path d="M-62 -10 L-74 -24 M62 -10 L74 -24" stroke="${C.plum}" stroke-width="5" stroke-linecap="round"/><path d="M-12 -8 Q0 -16 12 -8" stroke="${C.plum}" stroke-width="5" fill="none"/>`+[-36,36].map(x=>`<path d="M${x-26} -14 H${x+26} V2 C${x+26} 22 ${x-26} 22 ${x-26} 2Z" fill="#F7A8B8"/><path d="M${x-26} -14 H${x+26} V-4 H${x-26}Z" fill="#FFC9A8" opacity=".8"/><circle cx="${x+8}" cy="-1" r="7" fill="#FFE69A"/><path d="M${x-16} 8 L${x-6} -6" stroke="#fff" stroke-width="3" opacity=".7" stroke-linecap="round"/><path d="M${x-26} -14 H${x+26} V2 C${x+26} 22 ${x-26} 22 ${x-26} 2Z" fill="none" stroke="${C.plum}" stroke-width="4"/>`).join('')+A.blink(g(72,-34,.8,0,sparkle('#F5C451')),1.4)+A.blink(g(-76,12,.6,0,sparkle('#fff')),1.8,-.6);
+const wdrop=c=>A.flap(`<ellipse cx="-10" cy="-4" rx="10" ry="5" fill="#fff" transform="rotate(-25 -10 -4)"/><ellipse cx="10" cy="-4" rx="10" ry="5" fill="#fff" transform="rotate(25 10 -4)"/>`,.45)+g(0,2,1.3,0,drop(c))+`<circle cx="-3" cy="4" r="1.3" fill="${C.ink}"/><circle cx="3" cy="4" r="1.3" fill="${C.ink}"/>`;
+const wingedDrops=()=>g(0,10,1.5,0,A.pulse(heart('#F7A8B8'),1.08,1.8))+[[-50,30,1.2,0],[46,22,1.1,-1.2],[-26,-34,1,-2.4],[30,-40,.9,-3.4],[0,-62,.8,-.6]].map(([x,y,s,d])=>g(x,y,s,0,A.drift(wdrop('#9FC6EA'),26,-34,4.5,d))).join('');
+const bubble=r=>`<circle r="${r}" fill="#fff" opacity=".3"/><circle r="${r}" fill="none" stroke="#F7B6C8" stroke-width="2.5"/><circle r="${r-2.5}" fill="none" stroke="#9FC6EA" stroke-width="2" stroke-dasharray="${(r*1.6).toFixed(1)} ${(r*2.2).toFixed(1)}"/><circle r="${r-4}" fill="none" stroke="#A8DDB5" stroke-width="1.6" stroke-dasharray="${r} ${(r*2.6).toFixed(1)}" stroke-dashoffset="${r}"/><path d="M${(-r*.55).toFixed(1)} ${(-r*.25).toFixed(1)} a${(r*.6).toFixed(1)} ${(r*.6).toFixed(1)} 0 0 1 ${(r*.4).toFixed(1)} ${(-r*.35).toFixed(1)}" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+const bubbles=()=>`<path d="M-50 64 L-26 22" stroke="${C.plum}" stroke-width="5" stroke-linecap="round"/><circle cx="-18" cy="8" r="15" fill="none" stroke="${C.plum}" stroke-width="4"/>`+[[12,-8,17,0],[44,-36,23,-1.2],[-12,-46,13,-2.4],[64,6,12,-.6],[26,-74,10,-1.8],[-44,-18,9,-3]].map(([x,y,r,d])=>g(x,y,1,0,A.drift(bubble(r),10,-18,4.5,d))).join('')+g(40,-30,1,0,bubble(20))+g(-6,-20,1,0,bubble(11));
+const giraffe=()=>`<rect x="-30" y="40" width="10" height="34" rx="5" fill="#FFD98A"/><rect x="18" y="40" width="10" height="34" rx="5" fill="#FFD98A"/><ellipse cx="0" cy="40" rx="40" ry="22" fill="#FFD98A"/><path d="M8 30 L12 -60 L28 -60 L32 30Z" fill="#FFD98A"/><path d="M4 -78 v-12 M18 -80 v-12" stroke="#E0B060" stroke-width="3"/><circle cx="4" cy="-91" r="3.5" fill="#E0B060"/><circle cx="18" cy="-93" r="3.5" fill="#E0B060"/><ellipse cx="-4" cy="-74" rx="8" ry="4" fill="#FFD98A" transform="rotate(-25 -4 -74)"/><ellipse cx="22" cy="-68" rx="20" ry="13" fill="#FFD98A"/><ellipse cx="36" cy="-64" rx="10" ry="8" fill="#FFE8BF"/>`+[[20,-30,6],[24,-6,5],[16,12,6],[-14,34,7],[6,48,6],[26,40,5],[-28,46,5]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#F2B866"/>`).join('')+`<path d="M18 -72 q3 -4 6 0" stroke="${C.ink}" stroke-width="2.2" fill="none" stroke-linecap="round"/><ellipse cx="26" cy="-62" rx="4" ry="2.4" fill="#F49BB2"/><circle cx="40" cy="-66" r="1.6" fill="${C.ink}"/>`;
+
+/* ---- illustrations for pages 106-110 ---- */
+const bean=`<ellipse rx="9" ry="6" fill="#9A6B55"/><path d="M-7 0 q7 -3 14 0" stroke="#6E4E3E" stroke-width="1.6" fill="none"/>`;
+const coffeeCup=()=>g(0,-66,1,0,steam(3,12,22))+`<path d="M-30 -40 L30 -40 L22 56 Q21 62 14 62 L-14 62 Q-21 62 -22 56Z" fill="#FFF8F0"/><path d="M-26.8 -2 L26.8 -2 L24.2 30 L-24.2 30Z" fill="#E8B98C"/><rect x="-36" y="-52" width="72" height="14" rx="5" fill="#C99A72"/><rect x="-28" y="-58" width="56" height="8" rx="4" fill="#B58A72"/><path d="M-24 -30 L-20 50" stroke="#fff" stroke-width="3" opacity=".8" stroke-linecap="round"/>`+kawaii(0,-20,.7)+g(0,16,.6,0,A.pulse(heart('#fff'),1.15,1.4))+g(-46,52,1,20,bean)+g(42,58,.9,-30,bean)+g(50,30,.8,60,bean);
+const boot=c=>`<path d="M-14 -40 L14 -40 L14 10 L34 14 C42 16 42 30 34 30 L-14 30Z" fill="${c}"/><rect x="-16" y="-46" width="32" height="10" rx="4" fill="${c}"/><rect x="-16" y="-46" width="32" height="10" rx="4" fill="#fff" opacity=".35"/><path d="M-14 24 H38" stroke="#fff" stroke-width="3" opacity=".5"/>`+g(0,-14,.45,0,flower('#fff',C.lemon));
+const rainBoots=()=>`<ellipse cx="0" cy="40" rx="86" ry="13" fill="#B9D6F2"/><ellipse cx="-20" cy="38" rx="40" ry="5" fill="#fff" opacity=".4"/>`+[[-70,26,0],[70,24,-.5],[-56,14,-1],[60,12,-.3]].map(([x,y,d])=>g(x,y,.6,0,A.blink(drop('#9FC6EA'),.9,d,0))).join('')+g(-36,6,1,-8,A.sway(boot('#FFD86A'),7,1.1,0,30))+g(34,0,1,10,A.sway(boot('#F7A8B8'),7,1.1,0,30,-.55));
+const rainfall=(seed,n,avoid)=>{const R=rng(seed);let s='';for(let i=0;i<n;i++){const x=R()*390+5,y=R()*200+5;if(avoid&&x>avoid[0]&&x<avoid[2]&&y>avoid[1]&&y<avoid[3])continue;s+=g(x.toFixed(0),y.toFixed(0),.7,0,A.fall(drop(R()<.6?'#9FC6EA':'#fff'),60,1.6,-(R()*1.6).toFixed(2)));}return s;};
+const bouquet=()=>A.sway(`<path d="M0 40 L-30 -20 M0 40 L-10 -36 M0 40 L14 -34 M0 40 L32 -16 M0 40 L0 -10" stroke="${C.leaf2}" stroke-width="3" fill="none"/>`+g(-34,-24,.9,0,flower('#F7A8B8',C.lemon))+g(-10,-42,.9,0,daisy('#fff',C.apricot))+g(16,-40,.75,0,tulip('#D4C5F0').split('<path d="M-16')[0]+'<path d="M-16'+tulip('#D4C5F0').split('<path d="M-16')[1])+g(36,-20,.85,0,flower('#FFC9A8',C.lemon))+g(0,-14,.7,0,flower('#FFE69A',C.rose))+g(-46,-2,.5,-50,leaf(C.leaf))+g(46,-2,.5,50,leaf(C.leaf2))+
+  `<path d="M-42 -4 L42 -4 L10 64 L-10 64Z" fill="#BFE6D2"/><path d="M-42 -4 L-4 -4 L-10 64Z" fill="#fff" opacity=".35"/><ellipse cx="-10" cy="22" rx="12" ry="7" fill="none" stroke="#F48A9E" stroke-width="5" transform="rotate(-25 -10 22)"/><ellipse cx="10" cy="22" rx="12" ry="7" fill="none" stroke="#F48A9E" stroke-width="5" transform="rotate(25 10 22)"/><path d="M-2 24 L-12 48 M2 24 L12 48" stroke="#F48A9E" stroke-width="4" stroke-linecap="round"/><circle cx="0" cy="23" r="5" fill="#F48A9E"/>`+
+  `<path d="M22 30 L30 46" stroke="${C.plum}" stroke-width="1"/><g transform="rotate(-12 50 54)"><rect x="28" y="44" width="46" height="20" rx="4" fill="#fff"/><text x="51" y="58" text-anchor="middle" font-family="${F.cav}" font-weight="700" font-size="12" fill="${C.deepRose}">thank you</text></g>`,3,4,0,60);
+const cocoa=()=>g(0,-74,1,0,steam(3,12,22))+`<path d="M28 -6 C50 -6 50 26 26 24" stroke="#fff" stroke-width="7" fill="none" opacity=".85"/><path d="M-30 -36 L30 -36 L26 44 Q25 50 18 50 L-18 50 Q-25 50 -26 44Z" fill="#fff" opacity=".65"/><path d="M-28 -16 L28 -16 L25 42 Q24 47 18 47 L-18 47 Q-24 47 -25 42Z" fill="#9A6B55"/><path d="M-28 -16 L28 -16 L27.4 -6 L-27.4 -6Z" fill="#C99A72"/><path d="M-22 -30 L-18 40" stroke="#fff" stroke-width="3" opacity=".7" stroke-linecap="round"/>`+
+  `<g fill="#fff"><circle cx="-18" cy="-36" r="11"/><circle cx="0" cy="-40" r="13"/><circle cx="18" cy="-36" r="11"/><circle cx="-6" cy="-52" r="9"/><circle cx="8" cy="-54" r="8"/><circle cx="2" cy="-62" r="6"/></g><path d="M-16 -40 q8 6 16 -2 q8 -6 14 2" stroke="#9A6B55" stroke-width="2.5" fill="none" stroke-linecap="round"/>`+
+  [[-22,-46,'#F7B6C8',15],[22,-48,'#fff',-20],[14,-60,'#F7B6C8',30],[-12,-60,'#fff',-10]].map(([x,y,c,r])=>`<rect x="${x-5}" y="${y-5}" width="10" height="10" rx="3" fill="${c}" stroke="#F1D9E0" stroke-width="1" transform="rotate(${r} ${x} ${y})"/>`).join('')+kawaii(0,18,.75,'#FFE6D2');
+const snowfall=(seed,n)=>{const R=rng(seed);let s='';for(let i=0;i<n;i++){const x=R()*390+5,y=R()*330+5;s+=g(x.toFixed(0),y.toFixed(0),1,0,A.fall(`<circle r="${(1.6+R()*2.4).toFixed(1)}" fill="#fff"/>`,50,4+R()*2,-(R()*5).toFixed(2)));}return s;};
+const pinwheel=()=>`<rect x="-3" y="0" width="6" height="64" rx="3" fill="${C.tan}"/>`+A.spin([['#F7A8B8','#FFC9D6'],['#FFE69A','#FFF2C2'],['#9ED2B8','#C9EEDB'],['#B9D6F2','#DCEBFA']].map(([a,b],i)=>`<g transform="rotate(${i*90})"><path d="M0 0 L0 -50 C26 -50 34 -26 0 0Z" fill="${a}"/><path d="M0 0 L0 -50 C10 -40 14 -22 0 0Z" fill="${b}"/></g>`).join(''),3.5)+`<circle r="6" fill="${C.plum}"/><circle r="2" fill="#fff"/>`+A.blink(g(-48,-46,.7,0,sparkle('#F5C451')),1.5)+A.blink(g(52,-30,.6,0,sparkle(C.rose)),1.9,-.8);
+
+/* ---- illustrations for pages 111-115 ---- */
+const lotus=()=>`<ellipse cx="0" cy="36" rx="74" ry="14" fill="#A8DDB5"/><path d="M0 36 L40 30" stroke="#E3F3F1" stroke-width="4"/>`+[0,-1.6,-3.2].map(d=>A.drift(`<ellipse cx="0" cy="40" rx="80" ry="16" fill="none" stroke="#fff" stroke-width="2"/>`,0,0,4.8,d).replace('values="0 0;0 0"','values="0 0;0 0"').replace('type="translate"','type="scale"').replace('values="0 0;0 0"','values="0.8 0.8;1.3 1.3"')).join('')+
+  A.pulse([[-64,'#FFE0EA',34],[64,'#FFE0EA',34],[-36,'#FBC8D8',38],[36,'#FBC8D8',38],[-14,'#F7A8BE',40],[14,'#F7A8BE',40],[0,'#F48FAE',42]].map(([a,c,h])=>`<ellipse cx="0" cy="${30-h}" rx="13" ry="${h}" fill="${c}" transform="rotate(${a} 0 30)"/>`).join('')+`<circle cx="0" cy="20" r="9" fill="#FFE07A"/>`+kawaii(0,6,.55),1.12,8);
+const hamsterThought=()=>g(-34,26,1,0,`<circle cx="-26" cy="-16" r="10" fill="#F6D2A8"/><circle cx="26" cy="-16" r="10" fill="#F6D2A8"/><circle cx="-26" cy="-16" r="5" fill="#F7B6C8"/><circle cx="26" cy="-16" r="5" fill="#F7B6C8"/><ellipse cx="0" cy="10" rx="38" ry="31" fill="#F6D2A8"/><ellipse cx="0" cy="22" rx="23" ry="18" fill="#FFF3E6"/><path d="M-12 -24 q12 -8 24 0" stroke="#E8BC8C" stroke-width="3" fill="none" stroke-linecap="round"/>`+kawaii(0,2,.85)+`<ellipse cx="-12" cy="26" rx="6" ry="5" fill="#F7B6C8"/><ellipse cx="12" cy="26" rx="6" ry="5" fill="#F7B6C8"/>`)+
+  [[6,-18,4,0],[18,-32,6,-.3],[32,-48,8,-.6]].map(([x,y,r,d])=>A.blink(`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff"/>`,1.8,d,.4)).join('')+
+  g(62,-56,1,0,`<g fill="#fff"><circle cx="-26" cy="4" r="20"/><circle cx="0" cy="-10" r="26"/><circle cx="28" cy="2" r="20"/><rect x="-44" y="0" width="90" height="26" rx="13"/></g>`+g(-22,8,.5,0,A.bob(heart(C.rose),4,1.6))+g(2,-6,.55,0,A.bob(star('#F5C451',12),4,1.6,-.5))+g(26,10,.45,0,A.bob(flower('#B79BE8'),4,1.6,-1))+g(4,16,.35,0,A.bob(iceCream(),3,1.6,-1.2)));
+const pillow=()=>A.pulse(`<path d="M-64 -32 C-40 -46 40 -46 64 -32 C74 -10 74 10 64 32 C40 46 -40 46 -64 32 C-74 10 -74 -10 -64 -32Z" fill="#F9D3E3"/><path d="M-60 -30 C-40 -42 40 -42 60 -30" stroke="#fff" stroke-width="3" fill="none" opacity=".8"/><circle cx="-64" cy="-32" r="5" fill="#F7B6C8"/><circle cx="64" cy="-32" r="5" fill="#F7B6C8"/><circle cx="-64" cy="32" r="5" fill="#F7B6C8"/><circle cx="64" cy="32" r="5" fill="#F7B6C8"/>`+[[-42,-14],[42,-12],[-38,20],[44,22]].map(([x,y])=>g(x,y,.3,0,heart('#fff'))).join('')+kawaii(0,4,1.15)+`<path d="M-82 10 C-70 -6 -58 6 -54 20 M82 10 C70 -6 58 6 54 20" stroke="#FFE6D2" stroke-width="12" fill="none" stroke-linecap="round"/>`,1.05,2.6)+[[-30,-50,0],[10,-56,-1],[40,-48,-2]].map(([x,y,d])=>g(x,y,.45,0,A.rise(heart(C.rose),30,3,d))).join('');
+const wand=()=>g(0,0,1,22,`<rect x="-4" y="-6" width="8" height="96" rx="4" fill="${C.plum}"/><rect x="-5" y="60" width="10" height="12" rx="3" fill="#F7B6C8"/><path d="M0 0 C-14 10 -20 24 -14 40 M0 0 C14 10 20 26 14 42" stroke="#F7B6C8" stroke-width="3" fill="none" stroke-linecap="round"/>`+g(0,-18,1,0,A.pulse(star('#FFD86A',32)+kawaii(0,4,.55),1.1,1.6)))+[[-46,-40,0],[-60,-10,-.4],[-36,-66,-.8],[-70,24,-1.2],[-20,-84,-1.6],[44,-60,-.5],[56,-24,-1]].map(([x,y,d],i)=>g(x,y,.6+(i%3)*.15,0,A.blink(i%2?sparkle(['#F5C451','#F7A8B8','#B79BE8'][i%3]):star(['#F5C451','#F7A8B8','#9ED2B8'][i%3],8),1.4,d,0))).join('');
+const otter=c=>`<ellipse cx="22" cy="8" rx="9" ry="6" fill="${c}" transform="rotate(-30 22 8)"/><ellipse cx="0" cy="20" rx="24" ry="34" fill="${c}"/><ellipse cx="0" cy="26" rx="15" ry="24" fill="#EBD7C3"/><circle cx="-17" cy="-36" r="6" fill="${c}"/><circle cx="17" cy="-36" r="6" fill="${c}"/><circle cx="0" cy="-22" r="22" fill="${c}"/><ellipse cx="0" cy="-13" rx="13" ry="9" fill="#EBD7C3"/><ellipse cx="0" cy="-17" rx="4" ry="3" fill="${C.ink}"/><path d="M-11 -27 q4 -4 8 0 M3 -27 q4 -4 8 0" stroke="${C.ink}" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M-4 -11 q4 3 8 0" stroke="${C.ink}" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="-14" cy="-14" rx="4" ry="2.4" fill="#F49BB2"/><ellipse cx="14" cy="-14" rx="4" ry="2.4" fill="#F49BB2"/><ellipse cx="26" cy="6" rx="7" ry="5" fill="#B58A72"/>`;
+const otters=()=>g(0,-74,1,0,A.pulse(heart('#F48A9E'),1.18,1.2))+A.blink(g(-44,-74,.5,0,heart('#F7B6C8')),1.6)+A.blink(g(46,-80,.4,0,heart('#fff')),2,-.8)+A.bob(g(-32,0,1,6,otter('#C9A58A'))+g(32,0,1,-6,`<g transform="scale(-1 1)">${otter('#D4B396')}</g>`),4,3)+`<path d="M-90 40 q11 -8 22 0 t22 0 t22 0 t22 0 t22 0 t22 0 t22 0 t22 0 V70 H-90Z" fill="#B9D6F2"/><path d="M-80 52 q10 -6 20 0 t20 0 M30 56 q10 -6 20 0 t20 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".8"/>`;
+
+/* ============ more illustrations ============ */
+const snail=(sh,bd)=>`<path d="M-44 22 C-44 10 -34 8 -22 10 L34 10 C46 10 48 22 40 24 L-38 24 C-42 24 -44 23 -44 22Z" fill="${bd}"/><path d="M-36 14 C-44 -4 -34 -16 -24 -8 L-18 12Z" fill="${bd}"/><path d="M-32 -10 L-38 -24 M-26 -10 L-24 -26" stroke="${bd}" stroke-width="3" stroke-linecap="round"/><circle cx="-38" cy="-25" r="3.5" fill="${C.ink}"/><circle cx="-24" cy="-27" r="3.5" fill="${C.ink}"/><circle cx="6" cy="-10" r="24" fill="${sh}"/><path d="M6 -10 m-3 0 a3 3 0 1 1 6 0 a7 7 0 1 1 -14 0 a11 11 0 1 1 22 0 a15 15 0 1 1 -30 0 a19 19 0 0 1 38 0" stroke="#fff" stroke-width="3" fill="none" opacity=".7" stroke-linecap="round"/><path d="M-32 2 q3 3 6 0" stroke="${C.ink}" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="-36" cy="6" rx="3" ry="2" fill="#F49BB2"/>`;
+const mushroom=c=>`<path d="M-13 0 C-15 20 -11 34 0 34 C11 34 15 20 13 0Z" fill="#FFF3E6"/><path d="M-40 4 C-40 -32 40 -32 40 4 Q0 12 -40 4Z" fill="${c}"/><circle cx="-18" cy="-10" r="6" fill="#fff" opacity=".85"/><circle cx="8" cy="-18" r="4.5" fill="#fff" opacity=".85"/><circle cx="22" cy="-4" r="5" fill="#fff" opacity=".85"/>`+kawaii(0,18,.42);
+const cherries=()=>`<path d="M-14 8 C-12 -12 -4 -26 6 -34 M16 12 C14 -8 10 -22 6 -34" stroke="${C.leaf2}" stroke-width="3" fill="none" stroke-linecap="round"/>`+g(8,-34,.5,40,leaf(C.leaf))+`<circle cx="-14" cy="18" r="14" fill="#F48A9E"/><circle cx="16" cy="22" r="14" fill="#EE7690"/><circle cx="-19" cy="13" r="4" fill="#fff" opacity=".6"/><circle cx="11" cy="17" r="4" fill="#fff" opacity=".6"/>`;
+const cactus=()=>`<rect x="-34" y="-26" width="13" height="28" rx="6.5" fill="#8CC59A"/><rect x="-28" y="-6" width="16" height="11" rx="5.5" fill="#8CC59A"/><rect x="21" y="-36" width="13" height="30" rx="6.5" fill="#8CC59A"/><rect x="12" y="-14" width="16" height="11" rx="5.5" fill="#8CC59A"/><rect x="-15" y="-46" width="30" height="70" rx="15" fill="#9BD3A6"/><path d="M-5 -36 v54 M5 -36 v54" stroke="#fff" stroke-opacity=".45" stroke-width="2"/>`+g(0,-46,.5,0,flower('#F7A8B8',C.lemon))+`<path d="M-26 20 L26 20 L20 46 L-20 46Z" fill="#FFC9A8"/><rect x="-29" y="15" width="58" height="10" rx="3" fill="#F7B08F"/>`+kawaii(0,-6,.45);
+const kite=(a,b)=>`<path d="M0 50 C-10 70 14 80 2 100 C-8 116 10 124 4 136" stroke="${C.ink}" stroke-width="1.5" fill="none" opacity=".6"/>${[[2,74],[0,100],[4,124]].map(([x,y],i)=>`<path d="M${x-8} ${y-5} L${x} ${y} L${x-8} ${y+5}Z M${x+8} ${y-5} L${x} ${y} L${x+8} ${y+5}Z" fill="${[C.rose,'#F5C451','#7FC4A4'][i]}"/>`).join('')}<path d="M0 -44 L30 0 L0 50 L-30 0Z" fill="${a}"/><path d="M0 -44 L30 0 L0 0Z M0 50 L-30 0 L0 0Z" fill="${b}"/><path d="M0 -44 V50 M-30 0 H30" stroke="#fff" stroke-width="1.5" opacity=".7"/>`+kawaii(0,8,.5);
+const boat=c=>`<path d="M-24 -2 L0 -48 L24 -2Z" fill="#fff"/><path d="M0 -48 L24 -2 L0 -2Z" fill="#E8E2F5"/><path d="M-46 -2 L46 -2 L32 22 L-32 22Z" fill="${c}"/><path d="M-46 -2 L-24 -2 L-32 22Z" fill="#fff" opacity=".35"/>`;
+const whale=c=>`<path d="M-4 -34 C-10 -46 -18 -44 -20 -52 M4 -34 C6 -48 16 -46 18 -54 M0 -34 V-56" stroke="#8FCFE6" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M-48 6 C-48 -28 22 -34 34 -8 C40 4 50 -2 58 -16 C62 0 54 16 40 18 C20 32 -48 32 -48 6Z" fill="${c}"/><path d="M-44 12 C-30 26 10 28 28 18 C10 22 -26 22 -44 12Z" fill="#fff" opacity=".6"/><circle cx="-26" cy="-4" r="3" fill="${C.ink}"/><ellipse cx="-18" cy="4" rx="5" ry="3" fill="#F49BB2" opacity=".8"/><path d="M-38 6 q4 4 8 0" stroke="${C.ink}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+const frog=c=>`<ellipse cx="0" cy="26" rx="40" ry="20" fill="${c}"/><ellipse cx="0" cy="0" rx="42" ry="28" fill="${c}"/><circle cx="-22" cy="-24" r="14" fill="${c}"/><circle cx="22" cy="-24" r="14" fill="${c}"/><circle cx="-22" cy="-24" r="8" fill="#fff"/><circle cx="22" cy="-24" r="8" fill="#fff"/><circle cx="-20" cy="-23" r="4" fill="${C.ink}"/><circle cx="24" cy="-23" r="4" fill="${C.ink}"/><path d="M-16 6 Q0 18 16 6" stroke="${C.ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="-26" cy="6" rx="6" ry="3.5" fill="#F49BB2"/><ellipse cx="26" cy="6" rx="6" ry="3.5" fill="#F49BB2"/><ellipse cx="0" cy="32" rx="24" ry="9" fill="#fff" opacity=".4"/>`;
+const owl=c=>`<path d="M-28 -30 L-30 -50 L-14 -38Z M28 -30 L30 -50 L14 -38Z" fill="${c}"/><ellipse cx="0" cy="0" rx="32" ry="40" fill="${c}"/><path d="M-32 -4 C-42 10 -36 28 -24 30Z M32 -4 C42 10 36 28 24 30Z" fill="#000" opacity=".08"/><ellipse cx="0" cy="12" rx="20" ry="24" fill="#FFF1DE"/><path d="M-8 6 l3 3 l3 -3 M2 14 l3 3 l3 -3 M-8 22 l3 3 l3 -3" stroke="#E2C7A6" stroke-width="1.6" fill="none"/><circle cx="-13" cy="-16" r="12" fill="#fff"/><circle cx="13" cy="-16" r="12" fill="#fff"/><circle cx="-11" cy="-15" r="5.5" fill="${C.ink}"/><circle cx="15" cy="-15" r="5.5" fill="${C.ink}"/><circle cx="-9" cy="-17" r="1.8" fill="#fff"/><circle cx="17" cy="-17" r="1.8" fill="#fff"/><path d="M-5 -6 L5 -6 L0 2Z" fill="${C.apricot}"/><path d="M-10 40 v6 M-4 40 v6 M4 40 v6 M10 40 v6" stroke="${C.apricot}" stroke-width="3" stroke-linecap="round"/>`;
+const penguin=()=>`<path d="M-30 -4 C-42 8 -38 22 -28 20Z M30 -4 C42 8 38 22 28 20Z" fill="#7C7AA6"/><ellipse cx="-12" cy="42" rx="10" ry="5" fill="${C.apricot}"/><ellipse cx="12" cy="42" rx="10" ry="5" fill="${C.apricot}"/><ellipse cx="0" cy="0" rx="30" ry="42" fill="#7C7AA6"/><ellipse cx="0" cy="8" rx="21" ry="32" fill="#fff"/><circle cx="-9" cy="-18" r="3" fill="${C.ink}"/><circle cx="9" cy="-18" r="3" fill="${C.ink}"/><path d="M-5 -12 L5 -12 L0 -5Z" fill="${C.apricot}"/><ellipse cx="-15" cy="-10" rx="4.5" ry="2.8" fill="#F49BB2"/><ellipse cx="15" cy="-10" rx="4.5" ry="2.8" fill="#F49BB2"/><path d="M-26 0 C-12 6 12 6 26 0 L26 9 C12 15 -12 15 -26 9Z" fill="${C.rose}"/><path d="M12 8 L22 30 L12 28Z" fill="${C.rose}"/>`;
+const mug=c=>`<path d="M-12 -34 C-20 -44 -4 -50 -12 -62 M6 -34 C-2 -46 14 -52 6 -66" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".9"/><path d="M26 -14 C46 -16 46 18 24 16" stroke="${c}" stroke-width="8" fill="none"/><rect x="-30" y="-28" width="58" height="62" rx="10" fill="${c}"/><ellipse cx="-1" cy="-27" rx="27" ry="5" fill="#C99A72"/>`+g(-1,6,.7,0,heart('#fff'));
+const pancakes=()=>`<ellipse cx="0" cy="34" rx="58" ry="11" fill="#fff"/>`+[22,10,-2,-14].map(y=>`<ellipse cx="0" cy="${y+4}" rx="44" ry="10" fill="#D9A46A"/><ellipse cx="0" cy="${y}" rx="44" ry="10" fill="#F3C98E"/>`).join('')+`<ellipse cx="0" cy="-15" rx="34" ry="7" fill="#E59A5A"/><path d="M-30 -14 q-3 14 2 16 q5 -2 2 -15Z M22 -12 q-2 18 3 20 q4 -2 1 -19Z" fill="#E59A5A"/><rect x="-10" y="-27" width="20" height="12" rx="3" fill="#FFF0B3"/>`;
+const popsicle=(a,b)=>`<rect x="-5" y="16" width="10" height="34" rx="5" fill="${C.tan}"/><rect x="-22" y="-52" width="44" height="74" rx="22" fill="${b}"/><path d="M-22 -16 C-16 -8 -12 -20 -6 -12 C0 -4 4 -18 10 -10 C16 -4 20 -14 22 -16 V0 A22 22 0 0 1 -22 0Z" fill="${a}"/>`+kawaii(0,2,.6);
+const cake=()=>`<ellipse cx="0" cy="34" rx="52" ry="9" fill="#fff"/><rect x="-38" y="-10" width="76" height="42" rx="4" fill="#F6D7A7"/><rect x="-38" y="6" width="76" height="7" fill="#F7B6C8"/><rect x="-38" y="20" width="76" height="5" fill="#F7B6C8" opacity=".7"/><path d="M-40 -10 C-40 -22 40 -22 40 -10 L40 -2 C34 4 30 -6 24 2 C18 8 14 -4 8 2 C2 8 -4 -4 -10 2 C-16 8 -22 -4 -28 2 C-34 6 -38 0 -40 -2Z" fill="#FFF3F6"/>`+g(0,-26,.6,0,strawberry());
+const macaron=c=>`<ellipse cx="0" cy="8" rx="28" ry="10" fill="${c}"/><rect x="-25" y="-2" width="50" height="8" rx="4" fill="#FFF8EE"/><ellipse cx="0" cy="-6" rx="28" ry="10" fill="${c}"/><ellipse cx="-8" cy="-9" rx="8" ry="3" fill="#fff" opacity=".45"/>`;
+const macarons=()=>g(36,34,.8,8,macaron('#FFE69A'))+g(0,24,1,0,macaron('#F7B6C8'))+g(0,-6,1,0,macaron('#BFE6D2'))+g(0,-36,1,0,macaron('#D4C5F0'));
+const bubbleTea=()=>`<rect x="2" y="-80" width="9" height="70" rx="4.5" fill="${C.rose}" transform="rotate(10 6 -40)"/><path d="M-30 -34 C-30 -54 30 -54 30 -34Z" fill="#fff" opacity=".85"/><path d="M-30 -34 L30 -34 L22 44 Q21 50 14 50 L-14 50 Q-21 50 -22 44Z" fill="#fff" opacity=".75"/><path d="M-27 -14 L27 -14 L21 42 Q20 47 14 47 L-14 47 Q-20 47 -21 42Z" fill="#E8C3A0"/>`+[[-12,36],[0,40],[12,36],[-6,28],[8,27],[-14,22],[14,20]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#6E5A6E"/>`).join('')+kawaii(0,2,.6);
+const rocket=c=>`<path d="M-10 26 C-14 44 0 56 0 62 C0 56 14 44 10 26Z" fill="#FFC27A"/><path d="M-6 26 C-8 38 0 46 0 50 C0 46 8 38 6 26Z" fill="#FFE69A"/><path d="M-14 6 L-30 26 L-14 22Z M14 6 L30 26 L14 22Z" fill="${c}"/><path d="M0 -52 C20 -30 20 8 14 26 L-14 26 C-20 8 -20 -30 0 -52Z" fill="#fff"/><path d="M0 -52 C10 -42 14 -32 15 -26 L-15 -26 C-14 -32 -10 -42 0 -52Z" fill="${c}"/><circle cx="0" cy="-6" r="9" fill="#B9D6F2" stroke="${c}" stroke-width="3"/>`;
+const planet=(c,r)=>g(0,0,1,-20,`<path d="M-54 0 A54 16 0 0 1 54 0" stroke="${r}" stroke-width="6" fill="none"/><circle r="30" fill="${c}"/><path d="M-22 -12 q10 -6 20 -4" stroke="#fff" stroke-width="3" opacity=".5" fill="none" stroke-linecap="round"/><path d="M-54 0 A54 16 0 0 0 54 0" stroke="${r}" stroke-width="6" fill="none"/>`)+kawaii(0,-2,.6);
+const gift=(a,b)=>`<rect x="-34" y="-8" width="68" height="46" rx="4" fill="${a}"/><rect x="-38" y="-22" width="76" height="16" rx="4" fill="${a}"/><rect x="-38" y="-22" width="76" height="16" rx="4" fill="#fff" opacity=".3"/><rect x="-7" y="-22" width="14" height="60" fill="${b}"/><ellipse cx="-14" cy="-31" rx="14" ry="8" fill="none" stroke="${b}" stroke-width="6" transform="rotate(-20 -14 -31)"/><ellipse cx="14" cy="-31" rx="14" ry="8" fill="none" stroke="${b}" stroke-width="6" transform="rotate(20 14 -31)"/><circle cx="0" cy="-25" r="6" fill="${b}"/>`;
+const plane=c=>`<path d="M-44 4 L44 -28 L-8 14Z" fill="#fff"/><path d="M-8 14 L44 -28 L2 30Z" fill="${c}"/><path d="M-8 14 L-2 26 L2 30Z" fill="#fff" opacity=".7"/>`;
+const sunflower=()=>`<path d="M0 30 C-4 60 4 80 0 110" stroke="${C.leaf2}" stroke-width="5" fill="none"/>`+g(-2,80,.6,-60,leaf(C.leaf2))+g(2,96,.6,60,leaf(C.leaf))+Array.from({length:16},(_,i)=>`<ellipse cx="0" cy="-34" rx="8" ry="16" fill="${i%2?'#FFD86A':'#FFE69A'}" transform="rotate(${i*22.5})"/>`).join('')+`<circle r="24" fill="#B58A72"/>`+kawaii(0,2,.7,'#fff');
+const headphones=c=>`<path d="M-40 10 C-40 -52 40 -52 40 10" stroke="${C.plum}" stroke-width="7" fill="none" stroke-linecap="round"/><rect x="-52" y="-2" width="22" height="38" rx="10" fill="${c}"/><rect x="30" y="-2" width="22" height="38" rx="10" fill="${c}"/><rect x="-46" y="4" width="10" height="26" rx="5" fill="#fff" opacity=".5"/><rect x="36" y="4" width="10" height="26" rx="5" fill="#fff" opacity=".5"/>`+g(0,10,.9,0,heart(C.rose));
+const books=()=>`<rect x="-48" y="14" width="96" height="18" rx="3" fill="#B9D6F2"/><rect x="-48" y="19" width="96" height="4" fill="#fff" opacity=".6"/><rect x="-40" y="-4" width="84" height="18" rx="3" fill="#F7B6C8"/><rect x="32" y="-4" width="5" height="18" fill="#fff" opacity=".6"/><rect x="-44" y="-22" width="80" height="18" rx="3" fill="#BFE6D2"/><rect x="-36" y="-16" width="40" height="3" fill="#fff" opacity=".6"/><circle cx="12" cy="-36" r="12" fill="#F48A9E"/><path d="M12 -48 q2 -6 6 -8" stroke="${C.choc}" stroke-width="2" fill="none"/>`+g(16,-48,.35,50,leaf(C.leaf2))+`<circle cx="7" cy="-40" r="3" fill="#fff" opacity=".6"/>`;
+const openBook=()=>`<path d="M0 -26 C-20 -36 -44 -34 -56 -28 L-56 26 C-44 20 -20 18 0 28Z" fill="#fff"/><path d="M0 -26 C20 -36 44 -34 56 -28 L56 26 C44 20 20 18 0 28Z" fill="#FFF8EE"/><path d="M0 -26 V28" stroke="#E8D5F5" stroke-width="2"/>${[-14,-4,6,16].map(y=>`<path d="M-46 ${y} C-32 ${y-5} -16 ${y-4} -8 ${y}" stroke="#D4C5F0" stroke-width="2" fill="none"/>`).join('')}<path d="M-58 -26 L-58 32 C-44 26 -20 24 0 34 C20 24 44 26 58 32 L58 -26" stroke="${C.rose}" stroke-width="3" fill="none"/>`+g(28,0,.6,0,flower(C.pink))+g(-30,-46,.6,0,sparkle(C.lemon))+g(36,-48,.5,0,sparkle(C.rose));
+const camera=c=>`<rect x="-26" y="-36" width="26" height="14" rx="4" fill="${c}"/><rect x="-46" y="-26" width="92" height="60" rx="12" fill="${c}"/><rect x="-46" y="-6" width="92" height="10" fill="#fff" opacity=".35"/><circle cx="4" cy="4" r="22" fill="#fff"/><circle cx="4" cy="4" r="15" fill="#6E5F8C"/><circle cx="-1" cy="-1" r="5" fill="#fff" opacity=".7"/><circle cx="32" cy="-14" r="5" fill="${C.lemon}"/><rect x="24" y="-34" width="14" height="8" rx="3" fill="${C.rose}"/>`;
+const rabbit=c=>`<ellipse cx="-14" cy="-38" rx="9" ry="24" fill="${c}" transform="rotate(-12 -14 -38)"/><ellipse cx="14" cy="-38" rx="9" ry="24" fill="${c}" transform="rotate(12 14 -38)"/><ellipse cx="-14" cy="-38" rx="4.5" ry="17" fill="#F7B6C8" transform="rotate(-12 -14 -38)"/><ellipse cx="14" cy="-38" rx="4.5" ry="17" fill="#F7B6C8" transform="rotate(12 14 -38)"/><ellipse cx="0" cy="4" rx="34" ry="28" fill="${c}"/>`+kawaii(0,6,.85);
+const rocks=()=>[[0,-52,'#F7B6C8',1],[-6,0,'#BFE6D2',1.1],[4,52,'#D4C5F0',.95]].map(([x,y,c,s])=>g(x,y,s,0,`<ellipse rx="34" ry="22" fill="${c}"/><ellipse cx="-10" cy="-9" rx="10" ry="4" fill="#fff" opacity=".45"/>`+kawaii(0,4,.6))).join('');
+const jar=inner=>`<rect x="-34" y="-58" width="68" height="14" rx="4" fill="${C.tan}"/><path d="M-30 -44 L30 -44 C40 -38 40 -28 40 -20 L40 46 C40 54 34 60 26 60 L-26 60 C-34 60 -40 54 -40 46 L-40 -20 C-40 -28 -40 -38 -30 -44Z" fill="#fff" opacity=".75"/>${inner}<path d="M-30 -30 V44" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"/>`;
+const jarNotes=()=>jar([[-16,42,'#F7B6C8',20],[10,46,'#FFE69A',-15],[-4,26,'#BFE6D2',10],[18,24,'#D4C5F0',-30],[-20,10,'#FFC9A8',35],[6,6,'#B9D6F2',-5],[-6,-12,'#F7B6C8',-20]].map(([x,y,c,r])=>`<rect x="${x-10}" y="${y-7}" width="20" height="14" rx="2" fill="${c}" transform="rotate(${r} ${x} ${y})"/>`).join('')+g(12,-20,.55,10,heart(C.rose)));
+const jarLights=()=>jar(`<path d="M-30 40 C0 10 30 50 28 20 C24 -4 -26 30 -28 0 C-30 -20 20 -10 22 -30" stroke="${C.leaf2}" stroke-width="1.5" fill="none"/>`+[[-30,40],[-12,28],[6,30],[22,34],[26,14],[8,8],[-14,14],[-28,0],[-14,-12],[8,-14],[22,-28]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="8" fill="#FFF3B0" opacity=".5"/><circle cx="${x}" cy="${y}" r="3.2" fill="${['#FFD86A','#F7A8B8','#9ED2B8'][i%3]}"/>`).join('')+g(-6,48,.4,0,flower(C.lav)));
+const pompom=(c,r)=>Array.from({length:14},(_,i)=>`<ellipse cx="0" cy="${-r*.55}" rx="${r*.38}" ry="${r*.5}" fill="${c}" transform="rotate(${i*360/14})"/>`).join('')+`<circle r="${r*.5}" fill="${c}"/><circle r="${r*.5}" fill="#fff" opacity=".2"/>`;
+const pompoms=()=>`<path d="M-40 -96 V-58 M10 -96 V-10 M40 -96 V40" stroke="${C.ink}" stroke-width="1" opacity=".5"/>`+g(-40,-32,1,0,pompom('#F7B6C8',28))+g(10,22,1,0,pompom('#BFE6D2',30))+g(40,68,1,0,pompom('#D4C5F0',26));
+const peach=()=>`<circle r="20" fill="#FFB89A"/><path d="M0 -18 C-6 -6 -6 6 0 18" stroke="#F49A7E" stroke-width="2" fill="none"/><circle cx="-7" cy="-6" r="5" fill="#fff" opacity=".35"/>`+g(2,-18,.4,30,leaf(C.leaf2));
+const bark=()=>[[-26,-6,-8],[14,-20,12],[26,14,-4],[-10,26,6]].map(([x,y,r])=>g(x,y,1,r,`<path d="M-24 -14 L22 -18 L26 12 L-20 16Z" fill="#FFF8F2"/><path d="M-24 -14 L22 -18 L26 12 L-20 16Z" fill="none" stroke="#F1E2D8" stroke-width="2"/><circle cx="-8" cy="-4" r="4" fill="#F48A9E"/><circle cx="8" cy="4" r="4" fill="#7FA7D9"/><circle cx="-2" cy="8" r="3" fill="#B79BE8"/><circle cx="12" cy="-8" r="3" fill="#F48A9E"/>`)).join('');
+const dipBerry=()=>strawberry()+`<path d="M-25 2 C-12 12 12 12 25 2 C22 14 12 26 0 32 C-12 26 -22 14 -25 2Z" fill="#8A5A4A"/><path d="M-10 16 l6 -3 M3 21 l6 -3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`;
+const cookies=()=>`<ellipse cx="0" cy="24" rx="60" ry="14" fill="#fff"/><ellipse cx="0" cy="22" rx="46" ry="9" fill="#FFE0CC"/>`+[[-22,8],[22,8],[0,-12]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="20" fill="#E3B07A"/><circle cx="${x}" cy="${y}" r="20" fill="none" stroke="#D29A60" stroke-width="2"/><path d="M${x-10} ${y-6} h20 M${x-10} ${y} h20 M${x-10} ${y+6} h20 M${x-6} ${y-10} v20 M${x} ${y-10} v20 M${x+6} ${y-10} v20" stroke="#C88E57" stroke-width="1.5" opacity=".8"/>`).join('');
+
+/* ============ layout templates for quote pages ============ */
+const COL={rose:C.deepRose,pink:C.rose,plum:C.plum,teal:C.teal,ink:C.ink,coral:'#F08A7E',gold:'#E9A23B',white:'#fff',lav:'#A88BE0',blue:'#5C86C4',green:'#5FA77A'};
+const BIGF=new Set(['pac','shr','bun','lob','che','abr']);
+function autoLines(lines,top,bot,o={}){
+  const adv=lines.map(l=>l[2]*(['sac','pac','dan','lob'].includes(l[1])?1.0:1.08));
+  const tot=adv.reduce((a,b)=>a+b,0);let y=top+(bot-top-tot)/2,s='';
+  lines.forEach((l,i)=>{const [t,f,sz,c,ex={}]=l;const col=COL[c]||c;const base=y+adv[i]*.8;
+    const opt={a:o.a||'middle',f:F[f],s:sz,c:col,max:o.max||340};
+    if(f==='ama'||f==='cav'||f==='fred'){opt.w=700;} if(f==='ama')opt.ls=2;
+    if(BIGF.has(f)&&sz>=40){opt.st=col==='#fff'?C.plum:'#fff';opt.sw=sz>70?11:8;}
+    Object.assign(opt,ex);
+    s+=T(t,o.x||200,+base.toFixed(1),opt);y+=adv[i];});
+  return s;}
+const deco0=(p,top,bot)=>confetti(p.seed||(p.lines[0][0].length*13),p.cn??12,p.cc||['#fff',COL[p.lines[0][3]]||C.rose],[[22,top-12,378,bot+8]]);
+const TPL={
+  hero:p=>L([p.deco??deco0(p,p.ly1||205,p.ly2||372),g(200,p.my||112,p.ms||1.3,p.mr||0,p.m),autoLines(p.lines,p.ly1||205,p.ly2||372)]),
+  low:p=>L([p.deco??deco0(p,28,205),autoLines(p.lines,28,p.ly2||205),g(200,p.my||295,p.ms||1.3,p.mr||0,p.m)]),
+  side:p=>L([p.deco??deco0(p,60,340),g(p.mx||305,p.my||205,p.ms||1.5,p.mr||0,p.m),autoLines(p.lines,60,340,{x:30,a:'start',max:p.max||205})]),
+  frame:p=>L([p.deco||'',g(200,200,1,0,wreath(132,34,p.wc||[C.leaf,C.leaf2,'#A9D8B8'],p.wf||[[-90,C.pink],[-30,'#fff'],[30,C.lav],[90,'#fff'],[150,C.coral],[210,'#fff']])),autoLines(p.lines,112,290,{max:205})]),
+  badge:p=>L([p.deco??deco0(p,40,360),`<circle cx="200" cy="222" r="148" fill="#fff" opacity=".55"/>`,g(200,p.my||72,p.ms||.8,0,p.m),autoLines(p.lines,128,350,{max:250})]),
+  center:p=>L([p.deco||'',autoLines(p.lines,p.ly1||60,p.ly2||340)]),
+};
+const q=(tpl,bg,lines,m,o={})=>Object.assign({tpl,bg,ink:C.plum,lines,m},o);
+const stars=(seed,n,cols=['#fff','#FFE9A8'])=>{const R=rng(seed);let s='';for(let i=0;i<n;i++){const x=R()*380+10,y=R()*380+10;s+=g(x.toFixed(0),y.toFixed(0),.5+R()*.6,0,R()<.5?star(cols[i%cols.length],8):sparkle(cols[i%cols.length]));}return s;};
+
+/* ============ 65 new pages ============ */
+const NEW_PAGES=[
+// ---- 44 quotes ----
+q('low','#E6F4D8',[['slow & steady','ama',54,'teal'],['still gets there','pac',44,'rose']],snail('#F7B6C8','#FFE6D2'),{my:300,ms:1.9,deco:L([g(60,360,.7,0,flower(C.pink)),g(340,350,.8,0,daisy()),g(36,330,.55,0,sprig(C.leaf2,3)),g(370,336,.5,0,sprig(C.leaf2,3)),confetti(31,10,['#fff',C.leaf],[[20,20,380,220]])])}),
+q('hero','#FFE9DC',[['stay a little','cav',44,'plum'],['WILD','shr',96,'coral']],g(-46,14,.85,-8,mushroom('#F48A9E'))+g(26,0,1.15,6,mushroom('#B79BE8'))+g(72,22,.6,0,mushroom('#F7C14F')),{my:120,ms:1.25}),
+q('side','#FFF0F3',[['life is','cav',44,'plum'],['sweeter','pac',58,'rose'],['in pairs','ama',52,'plum']],cherries(),{ms:2.2,mx:300}),
+q('hero','#FFF3C4',[['bloom','shr',84,'rose'],['anyway','sac',70,'teal']],cactus(),{my:118,ms:1.45}),
+q('side','#D6ECFA',[['hold on,','cav',44,'plum'],['then let it','ama',48,'teal'],['FLY','bun',84,'coral']],A.sway(kite('#F7A8B8','#FFE69A'),6,3,0,-44),{my:150,ms:1.25,mx:310,deco:L([g(90,350,.9,0,cloud()),g(290,370,.6,0,cloud()),g(60,50,.6,0,cloud())])}),
+q('low','#DDF1F6',[['little boats','ama',56,'plum'],['can sail','cav',42,'teal'],['big seas','pac',54,'rose']],A.bob(A.sway(boat('#F7A8B8'),3,3),4,3),{my:290,ms:1.5,deco:L([wave(330,'#BFE3EC',10,60,0),wave(352,'#A6D7E4',12,70,20),wave(378,'#8FCBDB',10,56,8),g(330,250,.6,0,sun('#FFE69A','#FFC9A8',false))])}),
+q('hero','#D3EEF7',[['make a','cav',46,'teal'],['SPLASH','shr',80,'blue']],A.bob(whale('#9FC6EA'),5,3),{my:126,ms:1.6,deco:L([wave(380,'#BFE3EC',8,50,0),confetti(41,12,['#fff'],[[20,190,380,350]])])}),
+q('hero','#FFF6D6',[['leap first,','pac',54,'teal'],['wonder later','ama',52,'plum']],A.bob(frog('#A8DDB5'),5,1.6),{my:118,ms:1.4,deco:L([g(330,70,.5,0,flower(C.pink)),g(70,60,.4,0,flower(C.lav)),`<ellipse cx="200" cy="168" rx="70" ry="12" fill="#BFE6C6"/>`])}),
+q('badge','#E9DDF7',[['whooo’s','cav',44,'plum'],['amazing?','pac',52,'rose'],['YOU!','bun',66,'teal']],owl('#C9B6EA'),{my:78,ms:.85}),
+q('side','#DDEBFA',[['stay cool,','ama',56,'blue'],['stay','cav',44,'plum'],['kind','pac',64,'rose']],penguin(),{ms:1.9,deco:stars(51,18,['#fff'])}),
+q('hero','#FDE6DA',[['but first,','cav',42,'plum'],['a warm drink','pac',46,'rose'],['& a deep breath','ama',44,'teal']],mug('#BFE6D2'),{my:118,ms:1.3,ly1:200}),
+q('low','#FFF0D9',[['stack up','ama',58,'plum'],['the good days','pac',48,'rose']],pancakes(),{my:298,ms:1.7}),
+q('side','#E3F5EE',[['cool,','shr',60,'teal'],['calm &','ama',50,'plum'],['a little sticky','cav',40,'rose']],popsicle('#F7A8B8','#FFE69A'),{ms:1.8,mx:308}),
+q('hero','#FDE6EE',[['have your cake','pac',46,'rose'],['and share it too','ama',48,'plum']],cake(),{my:120,ms:1.6}),
+q('side','#F4ECFB',[['sweet things','dan',52,'rose'],['come in','ama',46,'plum'],['small packages','cav',40,'teal']],macarons(),{ms:1.5,mx:315}),
+q('hero','#FFEBD6',[['sip, smile,','pac',52,'rose'],['REPEAT','bun',62,'teal']],bubbleTea(),{my:120,ms:1.25}),
+q('side','#D9DEF7',[['reach for','ama',52,'plum'],['the stars','pac',52,'rose'],['& wave hi','cav',44,'teal']],A.bob(rocket('#F7A8B8'),8,2.4),{ms:1.7,mx:310,mr:15,deco:stars(61,22)}),
+q('hero','#E5DDF8',[['you’re','cav',44,'plum'],['out of','ama',52,'plum'],['this world','pac',54,'rose']],A.bob(planet('#FFC9A8','#B9D6F2'),6,4),{my:108,ms:1.35,ly1:190,deco:stars(71,20)}),
+q('hero','#FFF2C9',[['you are','cav',48,'plum'],['the gift','shr',72,'rose']],gift('#B9D6F2','#F7A8B8'),{my:120,ms:1.6,cn:22}),
+q('center','#DCEFFA',[['send good vibes','pac',46,'rose'],['EVERYWHERE','bun',46,'teal']],'',{ly1:170,ly2:300,deco:L([`<path d="M40 330 C120 360 200 240 300 120" stroke="${C.plum}" stroke-width="2" stroke-dasharray="4 8" fill="none" opacity=".45"/>`,g(318,96,1.3,0,A.bob(plane('#F7B6C8'),8,3)),g(70,80,.7,0,heart(C.rose)),g(340,330,.8,0,heart('#fff')),g(120,360,.6,0,heart(C.lemon)),g(60,200,.6,0,cloud())])}),
+q('side','#FFF6CF',[['turn your face','ama',46,'plum'],['toward','cav',42,'teal'],['the light','pac',54,'rose']],A.sway(sunflower(),4,4,0,110),{ms:1.25,my:150,mx:318,max:200}),
+q('hero','#E2F4EC',[['play your','ama',54,'plum'],['happy song','pac',52,'rose']],headphones('#F7B6C8'),{my:118,ms:1.4,deco:L([g(60,80,1,-10,note(C.plum)),g(330,90,.9,10,note(C.teal)),g(330,380,.6,0,note(C.rose)),g(50,370,.5,0,note(C.plum))])}),
+q('low','#FDEBDD',[['get lost in','cav',46,'plum'],['a good story','pac',52,'rose']],books(),{my:296,ms:1.6}),
+q('hero','#FFF0E0',[['say cheese','shr',60,'rose'],['& mean it','sac',66,'teal']],camera('#B9D6F2'),{my:116,ms:1.45}),
+q('badge','#FDE3EC',[['some','cav',42,'plum'],['BUNNY','bun',68,'rose'],['loves you','pac',48,'teal']],rabbit('#fff'),{my:84,ms:.72}),
+q('hero','#FFF4D2',[['sunny days','pac',52,'coral'],['are made of','ama',46,'plum'],['small things','cav',44,'teal']],ladybug(),{my:112,ms:1.5,ly1:192}),
+q('side','#CFD3F5',[['shine on,','lob',62,'white'],['you bright','cav',46,'plum'],['thing','cav',46,'plum']],lighthouse(),{ms:1.6,mx:312,my:196,deco:L([stars(81,20),wave(352,'#BAC2EE',8,60,0),wave(374,'#A9B4E8',8,50,10)])}),
+q('side','#FCE9F1',[['be soft','dan',54,'rose'],['be strong','shr',48,'plum'],['be you','pac',54,'teal']],hedgehog(),{ms:1.55,mx:310,my:214}),
+q('hero','#FFF0F0',[['you are','cav',44,'plum'],['enough','shr',66,'rose'],['just as you are','ama',40,'plum']],mirror(),{my:96,ms:.92,ly1:200}),
+q('low','#E9F5E1',[['kindness is','ama',50,'plum'],['always','cav',42,'teal'],['in season','pac',52,'rose']],fruitBasket(),{my:292,ms:1.5}),
+q('hero','#EAF2FB',[['find joy','pac',52,'rose'],['in the','ama',42,'plum'],['little things','cav',46,'teal']],magnifier(),{my:108,ms:1.4,ly1:202}),
+q('low','#FFE9DD',[['say yes to','ama',52,'plum'],['new','cav',44,'teal'],['adventures','pac',54,'rose']],suitcase(),{my:296,ms:1.5}),
+q('hero','#EFE6FA',[['dance like','ama',52,'plum'],['the kettle’s','cav',44,'teal'],['singing','pac',56,'rose']],kettle(),{my:118,ms:1.2,ly1:200,deco:L([g(56,90,1,-10,A.bob(note(C.rose),6,2)),g(340,150,.8,10,A.bob(note(C.plum),6,2.4,-1))])}),
+q('hero','#DCEEFB',[['laugh more','shr',60,'coral'],['worry less','sac',70,'plum']],duck(),{my:112,ms:1.5,ly1:208}),
+q('hero','#FFF6E2',[['there’s magic in','ama',46,'plum'],['ordinary','pac',58,'rose'],['days','cav',48,'teal']],snowglobe(),{my:108,ms:1.3,ly1:196}),
+q('side','#FFE8EC',[['make today','ama',52,'plum'],['delicious','pac',54,'rose']],strawberry()+g(-34,40,.5,-20,strawberry())+g(30,46,.45,20,strawberry()),{ms:2,mx:300,my:190}),
+q('low','#E8F6EA',[['water your','ama',54,'teal'],['own garden','pac',54,'rose']],wateringCan(),{my:288,ms:1.4}),
+q('hero','#FBE6F0',[['hugs are free','pac',48,'rose'],['give lots','ama',54,'plum']],bear(),{my:118,ms:1.25,ly1:212}),
+q('side','#FFF3E6',[['your vibe','ama',56,'plum'],['is','cav',44,'teal'],['lovely','pac',60,'rose']],lavaLamp(),{ms:1.7,mx:300,my:200}),
+q('hero','#E0F0FB',[['happy thoughts','pac',50,'rose'],['only, please','ama',52,'plum']],dandelion(),{my:108,ms:1.05,ly1:236}),
+q('hero','#FCE2EC',[['celebrate','shr',62,'coral'],['tiny wins','sac',72,'plum']],trophy(),{my:112,ms:1.4,cn:40}),
+q('low','#DDD9F5',[['rest is','ama',56,'plum'],['productive too','pac',48,'rose']],sloth(),{my:292,ms:1.5,deco:stars(121,12)}),
+q('hero','#FFF4EA',[['every day is','ama',52,'plum'],['a fresh page','pac',54,'rose']],openBook(),{my:120,ms:1.6}),
+q('hero','#FFF0C9',[['you’ve','cav',46,'plum'],['got','shr',70,'teal'],['this!','pac',64,'rose']],rosette(),{my:100,ms:1.15,ly1:184}),
+
+// ---- 8 recipes ----
+{type:'recipe',bg:'#FFE6D8',ink:C.plum,label:'cold & fruity',title:'Peach Iced Tea',art:()=>L([g(84,280,1.4,0,glass('#FFB98F','#FFE2CC')),g(50,196,.9,0,peach()),g(132,366,.6,0,peach())]),
+  ing:['2 cups cooled black tea','1 ripe peach, sliced','1 tbsp honey','lots of ice'],how:['Squish peach with honey,','add tea and ice. Stir,','sip slowly in the sun.']},
+{type:'recipe',bg:'#FFF4CC',ink:C.plum,label:'one ingredient!',title:'Banana Nice Cream',art:()=>L([g(90,290,1.3,0,bowl('#F7B6C8','#FFF0B3')),g(56,196,.5,0,sparkle('#E9A23B')),g(126,196,.5,0,sparkle(C.rose))]),
+  ing:['2 frozen ripe bananas','(optional) 1 tbsp cocoa','(optional) splash of milk'],how:['Blend, scrape, blend again','until creamy like soft-serve.','Top with sprinkles!']},
+{type:'recipe',bg:'#EAF0FB',ink:C.plum,label:'freezer sweets',title:'Berry Yogurt Bark',art:()=>L([g(90,290,1.2,0,bark()),g(50,200,.5,0,heart(C.rose))]),
+  ing:['1½ cups Greek yogurt','2 tbsp honey','a handful of berries','(optional) granola'],how:['Spread on a lined tray,','scatter berries, freeze 2 hrs,','then snap into pieces.']},
+{type:'recipe',bg:'#F4F9D2',ink:C.teal,label:'cold & zingy',title:'Lemon Mint Slushie',art:()=>L([g(84,280,1.4,0,glass('#FFF0A8','#fff')),g(130,214,.6,0,lemonSlice()),g(46,200,.5,-30,leaf(C.leaf2)),g(60,214,.4,20,leaf(C.leaf))]),
+  ing:['juice of 2 lemons','2 tbsp sugar or honey','6 mint leaves','2 cups ice'],how:['Blend everything until','slushy. Pour, add a straw,','and pucker up!']},
+{type:'recipe',bg:'#FDE3EA',ink:C.plum,label:'two ingredients',title:'Choco-Dipped Strawberries',art:()=>L([`<ellipse cx="90" cy="320" rx="70" ry="16" fill="#fff"/>`,g(60,284,1.2,-15,dipBerry()),g(116,290,1.2,15,dipBerry()),g(88,236,1,0,dipBerry())]),
+  ing:['1 cup chocolate chips','12 strawberries'],how:['Melt choc in 20-sec bursts,','dip berries, set on paper,','chill 15 min. So fancy!']},
+{type:'recipe',bg:'#FFF6D2',ink:C.teal,label:'cold & tropical',title:'Pineapple Coconut Cooler',art:()=>L([g(84,280,1.4,0,glass('#FFE58A','#FFFBEA')),g(128,212,.6,0,lemonSlice('#F7CF5B')),g(46,206,.5,0,flower('#F7A8B8',C.lemon))]),
+  ing:['1 cup pineapple chunks','1 cup coconut water','a squeeze of lime','ice'],how:['Blend until frothy.','Pour over ice and pretend','you’re on holiday.']},
+{type:'recipe',bg:'#FBEBDD',ink:C.plum,label:'easy bake',title:'3-Ingredient PB Cookies',art:()=>L([g(90,300,1.2,0,cookies()),g(52,206,.5,0,heart(C.rose)),g(130,210,.5,0,sparkle(C.plum))]),
+  ing:['1 cup peanut butter','½ cup sugar','1 egg'],how:['Mix, roll into balls, press','with a fork. Bake 10 min','at 180°C. Cool, then munch!']},
+{type:'recipe',bg:'#FCE4EE',ink:C.plum,label:'cold & dreamy',title:'Rose Milk',art:()=>L([g(84,280,1.4,0,glass('#F9C3D3','#fff')),g(44,196,.8,0,flower('#F7A8B8','#F48A9E')),g(132,366,.55,0,flower('#F7A8B8','#F48A9E'))]),
+  ing:['1 cup cold milk','1–2 tbsp rose syrup','ice','(optional) crushed pistachio'],how:['Stir syrup into milk until','blush pink. Pour over ice,','sprinkle pistachio. Ahh.']},
+
+// ---- 4 playlists ----
+{type:'list',bg:'#E3EDF8',ink:C.blue,label:'happy playlist',title:'Rainy Window Calm',icon:()=>g(352,62,.62,0,vinyl('#B9D6F2')),numbered:true,cols:1,
+  items:['Banana Pancakes — Jack Johnson','Bubbly — Colbie Caillat','Sunday Morning — Maroon 5','Put Your Records On — Corinne Bailey Rae','Better Together — Jack Johnson','Riptide — Vance Joy','Budapest — George Ezra','Home — Edward Sharpe']},
+{type:'list',bg:'#FFF1D6',ink:C.plum,label:'happy playlist',title:'Road Trip Sing-Along',icon:()=>g(352,62,.62,0,vinyl('#FFC9A8')),numbered:true,cols:1,
+  items:['Life Is a Highway — Rascal Flatts','Sweet Caroline — Neil Diamond','Shut Up and Dance — Walk the Moon','I’m Yours — Jason Mraz','Count on Me — Bruno Mars','Valerie — Mark Ronson ft. Amy Winehouse','Send Me on My Way — Rusted Root','Good Vibrations — The Beach Boys']},
+{type:'list',bg:'#F3E6F7',ink:C.plum,label:'happy playlist',title:'Golden Oldies Hug',icon:()=>g(352,62,.62,0,vinyl('#FFE69A')),numbered:true,cols:1,
+  items:['What a Wonderful World — Louis Armstrong','Ain’t No Mountain High Enough — Marvin Gaye','Isn’t She Lovely — Stevie Wonder','La Vie en Rose — Édith Piaf','Dream a Little Dream of Me — Ella & Louis','Fly Me to the Moon — Frank Sinatra','Moon River — Audrey Hepburn','Over the Rainbow — Israel Kamakawiwoʻole']},
+{type:'list',bg:'#E2F5EE',ink:C.teal,label:'happy playlist',title:'Bedroom Disco',icon:()=>g(352,62,.62,0,vinyl('#D4C5F0')),numbered:true,cols:1,
+  items:['Dancing in the Moonlight — Toploader','Hey Ya! — OutKast','Girls Just Want to Have Fun — Cyndi Lauper','Wake Me Up Before You Go-Go — Wham!','Footloose — Kenny Loggins','Celebration — Kool & The Gang','Rather Be — Clean Bandit ft. Jess Glynne','Cake by the Ocean — DNCE']},
+
+// ---- 5 top tens ----
+{type:'list',bg:'#E0EAF7',ink:C.blue,label:'top ten',title:'10 Rainy Day Joys',icon:()=>g(352,64,.55,0,umbrella('#F7A8B8','#FFE69A')),numbered:true,cols:2,
+  items:['Build a blanket fort','Bake something gooey','Jump in puddles','Start a big puzzle','Write a letter','Movie marathon','Make hot cocoa','Read by the window','Paint your nails','Nap to the rain']},
+{type:'list',bg:'#FFEFE2',ink:C.plum,label:'top ten',title:'10 Snacks That Spark Joy',icon:()=>g(352,62,.5,0,donut('#FFEFE2')),numbered:true,cols:2,
+  items:['Warm cookies','Buttery popcorn','Frozen grapes','Mango slices','Toast & honey','Dates & almonds','Cheese & crackers','Apple + peanut butter','Mini pancakes','A square of chocolate']},
+{type:'list',bg:'#EEE7FA',ink:C.plum,label:'top ten',title:'10 Free Things That Feel Fancy',icon:()=>g(352,62,.8,0,sparkle('#F5C451')),numbered:true,cols:2,
+  items:['A bubble bath','Flowers in a jar','Breakfast in bed','A sunset picnic','Lighting a candle','Using the nice plates','A slow morning','Dressing up for fun','Dinner with music','A handwritten note']},
+{type:'list',bg:'#E4F4EA',ink:C.teal,label:'top ten',title:'10 Questions for a Friend',icon:()=>g(352,62,.8,0,heart(C.rose)),numbered:true,cols:2,
+  items:['Best part of today?','Favorite snack ever?','Dream place to visit?','Favorite childhood toy?','Song on repeat?','Secret talent?','Perfect lazy day?','Funniest memory?','Pick a superpower!','What’s next for you?']},
+{type:'list',bg:'#FDE6EC',ink:C.plum,label:'top ten',title:'10 Ways to Say Thank You',icon:()=>g(352,62,.6,0,envelope('#B9D6F2')),numbered:true,cols:2,
+  items:['A sticky-note surprise','Bake them a treat','Send a voice note','Draw them a card','Play their fave song','A big long hug','Pay it forward','Pick them flowers','Tell someone about them','Say it twice!']},
+
+// ---- 4 crafts ----
+{type:'craft',bg:'#F2F8E6',ink:C.teal,label:'crafty project',title:'Painted Rock Buddies',art:()=>g(348,250,.95,0,rocks()),
+  steps:['Find smooth, flat rocks','Wash and let them dry','Paint a pastel base coat','Add faces with a fine pen','Hide them for friends to find!']},
+{type:'craft',bg:'#FFF4E8',ink:C.plum,label:'crafty project',title:'Jar of Happy Notes',art:()=>g(350,252,1.0,6,jarNotes()),
+  steps:['Grab a clean empty jar','Cut colorful paper slips','Write one happy thing a day','Fold them & drop them in','Read them on a gray day']},
+{type:'craft',bg:'#FCEAF1',ink:C.plum,label:'crafty project',title:'Tissue Paper Pom-Poms',art:()=>g(345,240,.9,0,pompoms()),
+  steps:['Stack 8 sheets of tissue','Fold them like a fan','Tie the middle with string','Round off both ends','Gently fluff each layer']},
+{type:'craft',bg:'#E9E6F7',ink:C.plum,label:'crafty project',title:'Fairy-Light Jar',art:()=>g(350,252,1.0,-4,jarLights()),
+  steps:['Find a pretty glass jar','Coil fairy lights inside','Add dried flowers or ribbon','Switch on at dusk','Enjoy the cozy glow']},
+];
+
+/* ============ YOUR OWN PAGES (add more over time) ============
+   Quote:  q('hero','#FFF0F3',[['your words','pac',52,'rose']], cherries())
+   Image:  {type:'image', bg:'#fff', src:'data:image/png;base64,...', caption:'optional words'}   */
+const MY_PAGES=[
+q('hero','#FFF1DC',[['spend more on food —','ama',44,'plum'],['your stomach','cav',44,'teal'],['will thank you!','pac',48,'rose']],noodleBowl(),{my:116,ms:1.3,ly1:200}),
+q('hero','#DFF0FA',[['smile','pac',74,'rose'],['and the world will','ama',44,'plum'],['smile back at you','cav',46,'teal']],globe(),{my:104,ms:1.3,ly1:186}),
+q('hero','#FFF3D0',[['always look','ama',54,'plum'],['on the','cav',44,'teal'],['bright side','pac',58,'coral']],sunglasses(),{my:110,ms:1.7,ly1:180}),
+q('hero','#E6EEFB',[['count your blessings','ama',42,'plum'],['day by day,','cav',40,'teal'],['and all your tears','ama',40,'plum'],['will fly away','pac',48,'rose']],wingedDrops(),{my:96,ms:1.15,ly1:176}),
+q('low','#F1E9FB',[['float like','ama',50,'plum'],['a bubble','pac',56,'rose'],['gentle and colorful','cav',40,'teal']],bubbles(),{my:322,ms:1.1,ly2:200}),
+q('side','#FBEBDD',[['coffee','pac',72,'rose'],['is','cav',46,'teal'],['JOY','shr',84,'coral']],coffeeCup(),{ms:1.45,mx:298,my:214}),
+q('low','#DCE6F7',[['dance','shr',76,'coral'],['in the rain','pac',54,'plum']],rainBoots(),{my:300,ms:1.35,ly2:200,deco:rainfall(107,26,[40,30,360,210])}),
+q('hero','#FFF0F3',[['be thankful,','pac',56,'rose'],['always','sac',78,'teal']],bouquet(),{my:116,ms:1.2,ly1:214}),
+q('side','#D3D6F2',[['hot chocolate','pac',44,'rose'],['on a','cav',42,'plum'],['cold night','ama',56,'plum']],cocoa(),{ms:1.45,mx:310,my:222,deco:L([snowfall(109,40),g(336,52,.9,-20,moon('#FFE9A8')),stars(1109,8,['#fff'])])}),
+q('hero','#E7F5EE',[['always stay','ama',52,'plum'],['young','shr',76,'coral'],['at heart','pac',54,'rose']],pinwheel(),{my:100,ms:1.15,ly1:184}),
+q('hero','#E3F3F1',[['breathe in,','ama',56,'teal'],['and breathe out','pac',50,'rose']],lotus(),{my:122,ms:1.4,ly1:222}),
+q('hero','#FFF5E1',[['think of what','ama',46,'plum'],['makes you','cav',40,'teal'],['happy','shr',66,'rose']],hamsterThought(),{my:122,ms:1.2,ly1:224}),
+q('low','#E7E1F7',[['hug your pillow','pac',48,'rose'],['with warmth','ama',54,'plum']],pillow(),{my:296,ms:1.35,ly2:196,deco:stars(113,10)}),
+q('side','#F3E5FA',[['bring magic','pac',48,'rose'],['to your','cav',42,'teal'],['imagination','ama',52,'plum']],wand(),{ms:1.35,mx:300,my:214,max:196}),
+q('hero','#FDE4EA',[['I love you','pac',68,'rose']],otters(),{my:150,ms:1.45,ly1:282,ly2:372}),
+];
+
+function renderImage(p){return `<image href="${p.src}" x="0" y="0" width="400" height="${p.caption?340:400}" preserveAspectRatio="xMidYMid ${p.fit||'slice'}"/>`+(p.caption?T(p.caption,200,376,{f:F.cav,s:30,w:700,c:p.ink||C.plum,max:360}):'');}
+
+/* ---- arrange the book: quotes with a special page every third spread, then number 1..N ---- */
+(function(){
+  const all=PAGES.concat(NEW_PAGES);
+  const quotes=all.filter(p=>!p.type),R=all.filter(p=>p.type==='recipe'),Ls=all.filter(p=>p.type==='list'),Cr=all.filter(p=>p.type==='craft');
+  const specials=[];const mx=Math.max(R.length,Ls.length,Cr.length);
+  for(let i=0;i<mx;i++){if(Ls[i])specials.push(Ls[i]);if(R[i])specials.push(R[i]);if(Cr[i])specials.push(Cr[i]);}
+  const out=[];let qi=0,si=0;
+  for(let i=0;i<all.length;i++){const wantSpecial=i%3===2;
+    if((wantSpecial&&si<specials.length)||qi>=quotes.length)out.push(specials[si++]);else out.push(quotes[qi++]);}
+  out.push(...MY_PAGES);
+  PAGES.length=0;out.forEach((p,i)=>{p.num=i+1;PAGES.push(p);});
+})();
+
+
+/* ---- renderers for structured pages ---- */
+function renderRecipe(p){
+  let s=T(p.label.toUpperCase(),200,30,{f:F.fred,w:600,s:13,c:p.ink,ls:4,op:.7})+T(p.title,200,74,{f:F.pac,s:36,c:C.deepRose,st:'#fff',sw:8,max:360})+p.art();
+  s+=T('you’ll need',176,124,{a:'start',f:F.ama,s:30,w:700,c:p.ink,ls:2});
+  p.ing.forEach((t,i)=>{const y=156+i*28;s+=`<circle cx="182" cy="${y-6}" r="4" fill="${C.rose}"/>`+T(t,194,y,{a:'start',f:F.cav,s:23,w:500,c:C.ink,max:196});});
+  const hy=156+p.ing.length*28+16;
+  s+=T('how to',176,hy,{a:'start',f:F.ama,s:30,w:700,c:p.ink,ls:2});
+  p.how.forEach((t,i)=>{s+=T(t,178,hy+30+i*26,{a:'start',f:F.cav,s:22,w:500,c:C.ink,max:208});});
+  return s;
+}
+function renderList(p){
+  let s=dotsGrid('#fff',26,2,.6)+T(p.label.toUpperCase(),36,40,{a:'start',f:F.fred,w:600,s:13,c:p.ink,ls:4,op:.75,max:260})+T(p.title,36,84,{a:'start',f:F.pac,s:p.cols===2?30:34,c:C.deepRose,st:'#fff',sw:8,max:p.cols===2?290:280})+p.icon();
+  if(p.cols===1){p.items.forEach((t,i)=>{const y=126+i*29;const [song,artist]=t.split(' — ');
+    s+=`<circle cx="46" cy="${y-6}" r="11" fill="${PASTELS[i%6]}"/>`+T(String(i+1),46,y-1,{f:F.fred,w:700,s:13,c:C.ink});
+    s+=`<text x="66" y="${y}" font-family="${F.fred}" font-size="16" fill="${C.ink}" data-maxw="300"><tspan font-weight="600">${esc(song)}</tspan><tspan fill="${p.ink}" opacity=".8"> · ${esc(artist||'')}</tspan></text>`;});
+    s+=`<path d="M36 ${126+8*29-6} h328" stroke="${p.ink}" stroke-width="1.5" stroke-dasharray="3 6" opacity=".4"/>`+T('press play, wiggle a little ♪',200,126+8*29+24,{f:F.cav,s:22,w:700,c:p.ink});
+  }else{p.items.forEach((t,i)=>{const col=i<5?0:1,row=i%5;const x=30+col*180,y=150+row*46;
+    s+=T(String(i+1),x+14,y+4,{f:F.shr,s:30,c:PASTELS[(i+1)%6],st:'#fff',sw:6})+T(t,x+36,y-4,{a:'start',f:F.cav,s:21,w:700,c:C.ink,max:134})+`<path d="M${x+36} ${y+8} h120" stroke="${p.ink}" stroke-width="1" opacity=".25"/>`;});
+    s+=g(200,388,.6,0,sparkle(C.rose));}
+  return s;
+}
+function renderCraft(p){
+  let s=p.art()+T(p.label.toUpperCase(),36,40,{a:'start',f:F.fred,w:600,s:13,c:p.ink,ls:4,op:.75,max:260})+T(p.title,36,84,{a:'start',f:F.pac,s:p.title.length>20?27:32,c:C.deepRose,st:'#fff',sw:8,max:p.type==='craft'&&p.title.length>20?290:330});
+  const top=p.wide?192:140, w=p.wide?296:204;
+  p.steps.forEach((t,i)=>{const y=top+i*40;s+=`<circle cx="50" cy="${y-7}" r="14" fill="${PASTELS[i%6]}"/>`+T(String(i+1),50,y-1,{f:F.fred,w:700,s:15,c:C.ink})+T(t,74,y,{a:'start',f:F.cav,s:23,w:700,c:C.ink,max:w});});
+  return s;
+}
+function pageSVG(p){
+  let inner=p.tpl?TPL[p.tpl](p):p.type==='recipe'?renderRecipe(p):p.type==='list'?renderList(p):p.type==='craft'?renderCraft(p):p.type==='image'?renderImage(p):p.art();
+  return `<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="400" height="400" fill="${p.bg}"/>${inner}<text x="384" y="392" text-anchor="end" font-family="${F.fred}" font-size="10" letter-spacing="2" fill="${C.ink}" opacity=".45">${p.num}</text></svg>`;
+}
+function coverSVG(){
+  return `<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#F7BFCC"/>`+
+  dotsGrid('#fff',22,1.6,.35)+
+  `<rect x="14" y="14" width="372" height="372" rx="10" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round"/>`+
+  g(330,70,.9,0,sun('#FFE69A','#FFC9A8',true))+
+  g(56,72,.9,-20,flower('#fff',C.apricot))+g(96,48,.55,10,flower('#FFE69A',C.rose))+g(40,130,.7,0,sprig('#fff',4))+
+  g(352,318,1,10,flower('#fff',C.lemon))+g(312,354,.6,0,flower(C.lav,C.lemon))+g(372,250,.7,0,sprig('#fff',3))+
+  g(40,330,.8,0,daisy('#fff',C.apricot))+g(80,360,.5,0,flower('#FFE69A',C.rose))+
+  `<path d="M40 210 C90 120 310 300 360 190" stroke="#E98AA4" stroke-width="10" fill="none" stroke-linecap="round" opacity=".6"/>`+
+  g(200,150,1,-4,ribbon(272,'#FFE69A','#F4C66A'))+
+  `<text x="200" y="164" text-anchor="middle" font-family="${F.ama}" font-weight="700" font-size="50" fill="${C.ink}" letter-spacing="3" transform="rotate(-4 200 150)" data-maxw="262">HAPPY LITTLE</text>`+
+  g(200,224,1,3,ribbon(200,'#FFE69A','#F4C66A'))+
+  `<text x="200" y="240" text-anchor="middle" font-family="${F.shr}" font-size="42" fill="${C.deepRose}" transform="rotate(3 200 224)" data-maxw="190">pages</text>`+
+  g(200,306,.8,0,ribbon(270,'#BFE6D2','#9ED2B8'))+
+  T('quotes · treats · tunes · joy',200,312,{f:F.cav,s:24,w:700,c:C.ink,max:250})+
+  g(118,264,.8,0,sparkle('#fff'))+g(288,108,.6,0,sparkle('#fff'))+T('by Rori',206,368,{a:'end',f:F.cav,s:28,w:700,c:C.deepRose,st:'#fff',sw:6,max:120})+g(224,360,.55,0,`<path d="M0 12 C-26 -6 -12 -26 0 -12 C12 -26 26 -6 0 12Z" fill="#fff" stroke="#fff" stroke-width="8" stroke-linejoin="round"/>`+heart(C.deepRose))+`</svg>`;
+}
+function endpaperSVG(){let s=`<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="#FFEFF3"/>`;
+  for(let y=20;y<400;y+=50)for(let x=((y-20)/50%2)*25+20;x<400;x+=50)s+=g(x,y,.42,(x*y)%90,((x+y)/50|0)%3===0?flower('#F7C1CF','#FFE69A'):((x+y)/50|0)%3===1?leaf('#BFE6C6'):sparkle('#E8D5F5'));
+  return s+`<text x="200" y="210" text-anchor="middle" font-family="${F.sac}" font-size="44" fill="${C.rose}" stroke="#FFEFF3" stroke-width="10" paint-order="stroke" data-maxw="330">this little book belongs to you</text></svg>`;}
+function backSVG(color,num){return `<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="400" fill="${color}"/>${dotsGrid('#fff',18,1.2,.25)}<text x="16" y="392" font-family="${F.fred}" font-size="10" letter-spacing="2" fill="${C.ink}" opacity=".4">${num}</text></svg>`;}
+
+/* ============ fit oversized lettering ============ */
+function fitSVG(html){
+  holder.innerHTML=html;const svg=holder.firstElementChild;
+  svg.querySelectorAll('text[data-maxw]').forEach(t=>{try{const w=t.getBBox().width,m=+t.dataset.maxw;if(w>m){const k=(m/w).toFixed(3),x=+t.getAttribute('x'),y=+t.getAttribute('y');t.setAttribute('transform',`${t.getAttribute('transform')||''} translate(${x} ${y}) scale(${k}) translate(${-x} ${-y})`);}}catch(e){}});
+  return svg.outerHTML;
+}
+const holder=document.createElement('div');holder.style.cssText='position:absolute;left:-9999px;top:0;width:400px;height:400px;visibility:hidden';document.body.appendChild(holder);
+
+/* ============ book mechanics ============ */
+const $=id=>document.getElementById(id);
+const book=$('book'),leavesEl=$('leaves'),leftFace=$('leftFace'),rightFace=$('rightFace'),leftPage=$('left'),rightPage=$('right');
+let COVER,ENDPAPER,state='closed',current=-1,deck=[],soundOn=true,actx=null;
+let TOTAL=PAGES.length;
+
+function edges(page){ // colourful page-edge stacks, thickness follows page number
+  const ratio=page/TOTAL, maxT=18;
+  const lt=state==='closed'?0:Math.max(2,Math.round(maxT*ratio)), rt=state==='closed'?maxT:Math.max(2,Math.round(maxT*(1-ratio)));
+  const cols=['#fff','#F9C9D6','#fff','#C9EEDB','#fff','#FFF0B3','#fff','#DCCFF5','#fff','#C8E4F6'];
+  const mk=(n,dir)=>{let a=[];for(let i=1;i<=maxT;i++){const k=Math.min(i,n);a.push(`${dir*k*0.7}px ${k*0.9}px 0 ${i<=n?cols[i%cols.length]:'transparent'}`);}a.push(`${dir*(n*0.7+6)}px ${n*0.9+14}px 26px rgba(126,107,168,.28)`);return a.join(',');};
+  rightPage.style.boxShadow=mk(rt,1);leftPage.style.boxShadow=mk(lt,-1);
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+function nextPage(){if(!deck.length)deck=shuffle(PAGES.map((_,i)=>i));let n=deck.pop();if(n===current&&PAGES.length>1){deck.unshift(n);n=deck.pop();}return n;}
+function makeLeaf(frontHTML,backHTML,cls=''){const l=document.createElement('div');l.className='leaf '+cls;l.innerHTML=`<div class="side front">${frontHTML}<div class="shade"></div></div><div class="side back">${backHTML}<div class="shade"></div></div>`;return l;}
+
+function flipSound(strength=1){
+  if(!soundOn)return;try{
+  actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+  const len=Math.floor(actx.sampleRate*.07),buf=actx.createBuffer(1,len,actx.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<len;i++){const t=i/len;d[i]=(Math.random()*2-1)*Math.pow(1-t,2.2)*(t<.08?t/.08:1);}
+  const src=actx.createBufferSource();src.buffer=buf;
+  const f=actx.createBiquadFilter();f.type='bandpass';f.frequency.value=1600+Math.random()*2400;f.Q.value=.8;
+  const gn=actx.createGain();gn.gain.value=.22*strength*(.6+Math.random()*.4);
+  src.connect(f);f.connect(gn);gn.connect(actx.destination);src.start();}catch(e){}
+}
+function chime(){if(!soundOn||!actx)return;try{[784,988,1319].forEach((fr,i)=>{const o=actx.createOscillator(),gn=actx.createGain();o.type='sine';o.frequency.value=fr;gn.gain.setValueAtTime(0,actx.currentTime+i*.09);gn.gain.linearRampToValueAtTime(.08,actx.currentTime+i*.09+.02);gn.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+i*.09+.6);o.connect(gn);gn.connect(actx.destination);o.start(actx.currentTime+i*.09);o.stop(actx.currentTime+i*.09+.7);});}catch(e){}}
+
+/* when does a leaf reach 90° (edge-on)? solve the easing curve */
+function bz(t,a,b){return 3*(1-t)*(1-t)*t*a+3*(1-t)*t*t*b+t*t*t;}
+function midFrac(e){let best=.5,bd=9;for(let i=0;i<=400;i++){const t=i/400,y=bz(t,e[1],e[3]);if(Math.abs(y-.5)<bd){bd=Math.abs(y-.5);best=bz(t,e[0],e[2]);}}return best;}
+const EZ={fast:[.45,.05,.55,.95],last:[.25,.8,.3,1],cover:[.5,0,.25,1]};
+const cb=e=>`cubic-bezier(${e.join(',')})`;
+function animateLeaf(leaf,delay,dur,ez,onStart,onMid){
+  const easing=cb(ez);
+  setTimeout(()=>{onStart&&onStart();},delay);
+  // a leaf only rises above the already-turned pages once it is past the spine
+  setTimeout(()=>{onMid&&onMid();},delay+dur*midFrac(ez));
+  const a=leaf.animate([{transform:'rotateY(0deg)'},{transform:'rotateY(-90deg) translateZ(1px)',offset:.5},{transform:'rotateY(-180deg)'}],{duration:dur,delay,easing,fill:'forwards'});
+  leaf.querySelector('.front .shade').animate([{opacity:0},{opacity:.9,offset:.5},{opacity:.9}],{duration:dur,delay,easing,fill:'forwards'});
+  leaf.querySelector('.back .shade').animate([{opacity:.9},{opacity:.9,offset:.5},{opacity:0}],{duration:dur,delay,easing,fill:'forwards'});
+  return a.finished;
+}
+
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+async function flip(){
+  if(state==='busy')return;
+  Music.start();
+  const wasClosed=state==='closed';state='busy';
+  $('controls').classList.remove('show');$('tag').style.opacity=0;
+  $('hint').textContent=wasClosed?'opening…':'shuffling…';
+  const target=nextPage();
+  leavesEl.innerHTML='';
+  const N=reduce?3:(16+Math.floor(Math.random()*10));
+  const leaves=[];
+  // top leaf: cover (first time) or the page currently showing
+  if(wasClosed){book.classList.add('hideLeft');book.classList.remove('closed');book.classList.add('open');leaves.push(makeLeaf(COVER,ENDPAPER,'cover'));}
+  else leaves.push(makeLeaf(PAGES[current].html,backSVG(PASTELS[Math.random()*PASTELS.length|0],PAGES[current].num)));
+  for(let i=0;i<N;i++){const p=PAGES[Math.random()*PAGES.length|0];leaves.push(makeLeaf(p.html,backSVG(PASTELS[Math.random()*PASTELS.length|0],p.num)));}
+  rightFace.innerHTML=PAGES[target].html;
+  leaves.forEach((l,i)=>{l.style.zIndex=leaves.length-i;leavesEl.appendChild(l);});
+  if(wasClosed){leftFace.innerHTML=ENDPAPER;}
+  const startPage=current<0?0:PAGES[current].num;
+  // timing: quick riffle that slows down to a stop
+  let t=wasClosed?0:0,proms=[];const M=leaves.length;
+  leaves.forEach((l,i)=>{
+    const k=i/(M-1||1);
+    let dur,ease;
+    if(wasClosed&&i===0){dur=1100;ease=EZ.cover;}
+    else{dur=260+Math.pow(k,2.2)*820;ease=i===M-1?EZ.last:EZ.fast;}
+    const myT=t;
+    proms.push(animateLeaf(l,myT,dur,ease,()=>{flipSound(i===M-1?1.3:1);
+      const pg=Math.round(startPage+(PAGES[target].num-startPage)*k);edges(pg);},
+      ()=>{l.style.zIndex=1000+i;if(i===0)book.classList.remove('hideLeft');}));
+    t+= (wasClosed&&i===0)?620:(38+Math.pow(k,3)*430);
+  });
+  await Promise.all(proms);
+  // settle: keep last back on the left, clear the leaves
+  leftFace.innerHTML=leaves[M-1].querySelector('.back').innerHTML.replace('<div class="shade"></div>','');
+  leavesEl.innerHTML='';
+  current=target;state='open';edges(PAGES[target].num);
+  landed();
+}
+function landed(){
+  const glow=$('glow');glow.classList.remove('on');void glow.offsetWidth;glow.classList.add('on');
+  chime();burst();
+  const p=PAGES[current];
+  $('tag').textContent=`~ page ${p.num} of ${TOTAL} ~`;$('tag').style.opacity=1;
+  $('hint').textContent='tap the book to flip again ✿';
+  $('controls').classList.add('show');
+}
+function burst(){
+  if(reduce)return;const r=rightPage.getBoundingClientRect();const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  for(let i=0;i<34;i++){const d=document.createElement('div');d.className='confetti';const s=6+Math.random()*7;d.style.cssText+=`width:${s}px;height:${s*(Math.random()<.5?1:2)}px;left:${cx}px;top:${cy}px;background:${['#F7A8B8','#FFE69A','#BFE6C6','#B9D6F2','#D4C5F0','#FFC9A8'][i%6]};${Math.random()<.4?'border-radius:50%':''}`;document.body.appendChild(d);
+    const a=Math.random()*Math.PI*2,v=r.width*(.45+Math.random()*.5);
+    d.animate([{transform:'translate(-50%,-50%) rotate(0)',opacity:1},{transform:`translate(${Math.cos(a)*v}px,${Math.sin(a)*v+r.height*.3}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:1200+Math.random()*600,easing:'cubic-bezier(.15,.7,.3,1)'}).finished.then(()=>d.remove());}
+}
+async function closeBook(){
+  if(state!=='open')return;state='busy';$('controls').classList.remove('show');$('tag').style.opacity=0;
+  const l=makeLeaf(COVER,leftFace.innerHTML,'cover');l.style.zIndex=3000;l.style.transform='rotateY(-180deg)';leavesEl.appendChild(l);
+  flipSound(1.2);
+  const a=l.animate([{transform:'rotateY(-180deg)'},{transform:'rotateY(0deg)'}],{duration:900,easing:'cubic-bezier(.5,0,.25,1)',fill:'forwards'});
+  setTimeout(()=>{book.classList.add('hideLeft');},900*(1-midFrac(EZ.cover)));setTimeout(()=>{book.classList.remove('open');book.classList.add('closed');},350);
+  await a.finished;
+  rightFace.innerHTML=COVER;leavesEl.innerHTML='';current=-1;state='closed';book.classList.remove('hideLeft');edges(0);
+  $('hint').textContent='tap the book to open it ✿';
+}
+function openLightbox(){if(current<0)return;$('lbcard').innerHTML=PAGES[current].html;$('lightbox').classList.add('show');$('lightbox').setAttribute('aria-hidden','false');}
+function closeLightbox(){$('lightbox').classList.remove('show');$('lightbox').setAttribute('aria-hidden','true');}
+
+$('stage').addEventListener('click',flip);
+$('stage').addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();flip();}});
+$('again').addEventListener('click',flip);
+$('big').addEventListener('click',openLightbox);
+$('close').addEventListener('click',closeBook);
+$('lightbox').addEventListener('click',closeLightbox);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
+/* ============ soft background music (generated live: warm pads + music box) ============ */
+const mtof=n=>440*Math.pow(2,(n-69)/12);
+const Music={on:true,playing:false,timer:null,master:null,bus:null,next:0,step:0,mi:3,
+  ctx(){actx=actx||new (window.AudioContext||window.webkitAudioContext)();return actx;},
+  init(){if(this.master)return;const c=this.ctx();
+    this.master=c.createGain();this.master.gain.value=0;
+    const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2400;
+    const rev=c.createConvolver(),len=c.sampleRate*3.4,ir=c.createBuffer(2,len,c.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.8);}
+    rev.buffer=ir;const wet=c.createGain();wet.gain.value=.6;
+    this.bus=c.createGain();this.bus.connect(lp);lp.connect(this.master);this.bus.connect(rev);rev.connect(wet);wet.connect(this.master);this.master.connect(c.destination);},
+  start(){if(!this.on)return;try{this.init();const c=this.ctx();c.resume&&c.resume();if(this.playing)return;this.playing=true;
+    this.next=c.currentTime+.15;this.step=0;
+    this.master.gain.cancelScheduledValues(c.currentTime);this.master.gain.setValueAtTime(this.master.gain.value,c.currentTime);this.master.gain.linearRampToValueAtTime(.55,c.currentTime+3);
+    this.timer=setInterval(()=>this.tick(),150);this.tick();}catch(e){}},
+  stop(){if(!this.playing)return;const c=this.ctx();this.playing=false;clearInterval(this.timer);
+    this.master.gain.cancelScheduledValues(c.currentTime);this.master.gain.setValueAtTime(this.master.gain.value,c.currentTime);this.master.gain.linearRampToValueAtTime(0,c.currentTime+.8);},
+  tick(){const c=this.ctx(),e=60/64/2;while(this.next<c.currentTime+.7){this.play(this.step,this.next,e);this.next+=e;this.step++;}},
+  play(step,t,e){
+    const CH=[[48,55,64,67,71],[45,52,60,64,67],[41,48,57,60,64],[43,50,59,62,67]];
+    const bar=Math.floor(step/16)%4,s=step%16,ch=CH[bar],barLen=16*e;
+    if(s===0){ch.slice(1).forEach(n=>this.pad(n,t,barLen));this.bell(ch[0],t,.05,5,true);}
+    const notes=[...new Set([...ch.slice(1).map(n=>n+12),...ch.slice(2).map(n=>n+24)])].sort((a,b)=>a-b);
+    const play=s===0||(s%2===0&&Math.random()<.5)||(s%2===1&&Math.random()<.12);
+    if(play){this.mi=Math.max(0,Math.min(notes.length-1,this.mi+[-2,-1,-1,1,1,2,0][Math.random()*7|0]));this.bell(notes[this.mi],t+(Math.random()*.02),.045,2.6);}
+  },
+  pad(n,t,dur){const c=this.ctx();[-5,5].forEach(dt=>{const o=c.createOscillator(),gn=c.createGain();o.type='triangle';o.frequency.value=mtof(n);o.detune.value=dt;
+    gn.gain.setValueAtTime(0,t);gn.gain.linearRampToValueAtTime(.016,t+2.2);gn.gain.setValueAtTime(.016,t+dur-.3);gn.gain.linearRampToValueAtTime(0,t+dur+1.8);
+    o.connect(gn);gn.connect(this.bus);o.start(t);o.stop(t+dur+2);});},
+  bell(n,t,vol,dec,soft){const c=this.ctx();[[1,1],[2,.25],[3,.06]].forEach(([m,a])=>{const o=c.createOscillator(),gn=c.createGain();o.type='sine';o.frequency.value=mtof(n)*m;
+    gn.gain.setValueAtTime(0.0001,t);gn.gain.exponentialRampToValueAtTime(vol*a,t+(soft?.4:.012));gn.gain.exponentialRampToValueAtTime(0.0001,t+dec/m);
+    o.connect(gn);gn.connect(this.bus);o.start(t);o.stop(t+dec/m+.1);});}
+};
+document.addEventListener('visibilitychange',()=>{if(!actx)return;document.hidden?actx.suspend():actx.resume();});
+$('music').addEventListener('click',()=>{Music.on=!Music.on;$('music').classList.toggle('off',!Music.on);$('music').setAttribute('aria-label',Music.on?'Turn music off':'Turn music on');Music.on?Music.start():Music.stop();});
+$('sound').addEventListener('click',()=>{soundOn=!soundOn;$('sound').textContent=soundOn?'🔊':'🔈';$('sound').setAttribute('aria-label',soundOn?'Turn page sounds off':'Turn page sounds on');});
+
+/* ============ boot ============ */
+(async function(){
+  try{await Promise.race([Promise.all(FONT_LOAD.map(f=>document.fonts.load(f.includes('px')?f:`32px '${f}'`))),new Promise(r=>setTimeout(r,3500))]);}catch(e){}
+  COVER=fitSVG(coverSVG());
+  if(reduce)PAGES.forEach(p=>{const a=p.art,t=p.tpl;});ENDPAPER=fitSVG(endpaperSVG());
+  PAGES.forEach(p=>{p.html=fitSVG(pageSVG(p));if(reduce)p.html=p.html.replace(/<animate(Transform)?[^>]*\/>/g,'');});
+  holder.remove();
+  // the cover sits on the right page while closed
+  const coverLeafHolder=COVER;rightFace.innerHTML=coverLeafHolder;
+  edges(0);
+  $('loading').classList.add('gone');
+  window.__ready=true;
+})();
+</script>
+</body>
+</html>
