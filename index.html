@@ -983,8 +983,12 @@ function newStage(closed){
 }
 function addLeaf(st){
   const i=st.leaves.length;let l;
-  if(i===0)l=st.closed?makeLeaf(COVER,ENDPAPER,'cover'):makeLeaf(PAGES[current].still,backSVG(PASTELS[Math.random()*PASTELS.length|0],PAGES[current].num));
-  else{const p=PAGES[Math.random()*PAGES.length|0];l=makeLeaf(p.still,backSVG(PASTELS[Math.random()*PASTELS.length|0],p.num));}
+  // the back of each turning page counts toward the landing page; the last one is always (landing page - 1)
+  const from=current<0?0:PAGES[current].num, to=PAGES[st.target].num-1;
+  const backNum=Math.max(0,Math.round(from+(to-from)*(st.N?i/st.N:1)));
+  const back=backNum<1?ENDPAPER:backSVG(PASTELS[Math.random()*PASTELS.length|0],backNum);
+  if(i===0)l=st.closed?makeLeaf(COVER,i===st.N?back:ENDPAPER,'cover'):makeLeaf(PAGES[current].still,back);
+  else{const p=PAGES[Math.random()*PAGES.length|0];l=makeLeaf(p.still,back);}
   l.classList.add('staged');l.style.zIndex=st.N+1-i;leavesEl.appendChild(l);st.leaves.push(l);
 }
 function finishStage(st){while(st.leaves.length<st.N+1)addLeaf(st);return st;}
