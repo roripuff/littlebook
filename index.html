@@ -661,6 +661,77 @@ const voicePage=()=>{let s='';
   s+=guideHills();
   return s;};
 
+/* ---- pages 122-128 ---- */
+const softDisc=(x,y,r,c='#fff',op=.6)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}"/>`;
+const panda=()=>[[-40,-30,0],[44,-40,-1.2],[0,-66,-2.2]].map(([x,y,d])=>g(x,y,.45,0,A.rise(heart(['#F48A9E','#F7B6C8','#FFC9D6'][Math.abs(Math.round(d))%3]),30,3.4,d))).join('')+
+  `<circle cx="-30" cy="-46" r="14" fill="${C.ink}"/><circle cx="30" cy="-46" r="14" fill="${C.ink}"/><ellipse cx="-20" cy="60" rx="14" ry="8" fill="${C.ink}"/><ellipse cx="20" cy="60" rx="14" ry="8" fill="${C.ink}"/><ellipse cx="0" cy="32" rx="40" ry="32" fill="#fff"/><circle cx="0" cy="-20" r="36" fill="#fff"/>`+
+  `<ellipse cx="-14" cy="-22" rx="10" ry="12" fill="${C.ink}" transform="rotate(-20 -14 -22)"/><ellipse cx="14" cy="-22" rx="10" ry="12" fill="${C.ink}" transform="rotate(20 14 -22)"/><path d="M-18 -21 q3 -3 6 0 M12 -21 q3 -3 6 0" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="-8" rx="5" ry="3.5" fill="${C.ink}"/><path d="M-4 -2 q4 3 8 0" stroke="${C.ink}" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="-24" cy="-5" rx="5" ry="3" fill="#F49BB2"/><ellipse cx="24" cy="-5" rx="5" ry="3" fill="#F49BB2"/>`+
+  g(0,30,1.3,0,A.pulse(heart('#F48A9E'),1.1,1.3))+`<ellipse cx="-24" cy="28" rx="10" ry="15" fill="${C.ink}" transform="rotate(40 -24 28)"/><ellipse cx="24" cy="28" rx="10" ry="15" fill="${C.ink}" transform="rotate(-40 24 28)"/>`;
+const bulb=()=>A.pulse(`<circle cx="0" cy="-16" r="54" fill="#FFF3B0" opacity=".55"/>`,1.12,2)+[-60,-30,0,30,60].map((a,i)=>A.blink(`<path d="M0 -76 V-88" stroke="#F5C451" stroke-width="4" stroke-linecap="round" transform="rotate(${a} 0 -16)"/>`,1.6,-i*.3,.15)).join('')+
+  `<path d="M-30 -16 C-30 -52 30 -52 30 -16 C30 2 16 10 14 24 L-14 24 C-16 10 -30 2 -30 -16Z" fill="#FFE69A"/><path d="M-20 -26 C-18 -38 -8 -44 2 -44" stroke="#fff" stroke-width="4" fill="none" opacity=".7" stroke-linecap="round"/><rect x="-14" y="24" width="28" height="8" rx="3" fill="#C9B6EA"/><rect x="-12" y="32" width="24" height="8" rx="3" fill="#B79BE8"/><rect x="-7" y="40" width="14" height="6" rx="3" fill="#9C8BB5"/>`+kawaii(0,-14,.8)+
+  `<path d="M-32 -54 L0 -66 L32 -54 L0 -42Z" fill="${C.ink}"/><rect x="-15" y="-52" width="30" height="9" fill="${C.ink}"/><path d="M27 -55 V-38" stroke="#F5C451" stroke-width="2"/><circle cx="27" cy="-36" r="3" fill="#F5C451"/>`;
+const turtle=()=>A.blink(`<path d="M-78 0 H-60 M-84 14 H-62 M-76 28 H-60" stroke="#B9D6F2" stroke-width="3" stroke-linecap="round"/>`,.8,0,.2)+A.bob(
+  `<ellipse cx="-24" cy="24" rx="10" ry="6" fill="#A8DDB5"/><ellipse cx="24" cy="24" rx="10" ry="6" fill="#A8DDB5"/><path d="M-44 10 q-10 2 -12 -4" stroke="#A8DDB5" stroke-width="6" stroke-linecap="round" fill="none"/>`+
+  `<path d="M-42 22 C-42 -18 34 -18 34 22Z" fill="#9ED2B8"/><path d="M-30 16 L-20 -2 L-4 -8 L12 -2 L22 16" stroke="#7FC4A4" stroke-width="2.5" fill="none" stroke-linejoin="round"/><path d="M-20 -2 L-14 16 M12 -2 L6 16 M-4 -8 V16" stroke="#7FC4A4" stroke-width="2.5"/><rect x="-46" y="18" width="84" height="8" rx="4" fill="#BFE6C6"/>`+
+  `<circle cx="48" cy="6" r="14" fill="#A8DDB5"/><path d="M42 2 q3 -3 6 0" stroke="${C.ink}" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M48 12 q4 3 8 -1" stroke="${C.ink}" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="54" cy="9" rx="3.5" ry="2" fill="#F49BB2"/>`+
+  `<path d="M40 -6 L50 -34 L60 -4Z" fill="#F7A8B8"/><circle cx="50" cy="-35" r="4" fill="#FFE69A"/><circle cx="48" cy="-18" r="2" fill="#fff"/><circle cx="54" cy="-10" r="2" fill="#fff"/>`+
+  `<rect x="-54" y="30" width="108" height="8" rx="4" fill="#F7A8B8"/><circle cx="-34" cy="44" r="6" fill="${C.plum}"/><circle cx="34" cy="44" r="6" fill="${C.plum}"/>`,4,1.6);
+const clock=()=>A.sway(`<path d="M-26 -44 L-36 -56 M26 -44 L36 -56" stroke="${C.plum}" stroke-width="5" stroke-linecap="round"/><circle cx="-30" cy="-42" r="13" fill="#F7A8B8"/><circle cx="30" cy="-42" r="13" fill="#F7A8B8"/><path d="M-30 40 L-36 54 M30 40 L36 54" stroke="${C.plum}" stroke-width="5" stroke-linecap="round"/><circle r="46" fill="#B9D6F2"/><circle r="37" fill="#FFF8EE"/>`+
+  [0,90,180,270].map(a=>`<rect x="-2" y="-34" width="4" height="8" rx="2" fill="${C.plum}" transform="rotate(${a})"/>`).join('')+[30,60,120,150,210,240,300,330].map(a=>`<circle cx="0" cy="-31" r="1.6" fill="${C.plum}" transform="rotate(${a})"/>`).join('')+
+  A.spin(`<rect x="-2.5" y="-20" width="5" height="22" rx="2.5" fill="${C.plum}"/>`,40)+A.spin(`<rect x="-2" y="-28" width="4" height="30" rx="2" fill="#F48A9E"/>`,6)+`<circle r="4" fill="${C.plum}"/>`+g(0,18,.45,0,heart(C.rose)),3,1.8);
+const armchair=()=>`<rect x="-44" y="-42" width="88" height="66" rx="22" fill="#F7B6C8"/>`+[[-22,-22],[0,-22],[22,-22],[-11,-6],[11,-6]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.2" fill="#E79BB0"/>`).join('')+
+  `<rect x="-48" y="8" width="96" height="24" rx="10" fill="#F49BB2"/><rect x="-60" y="-8" width="26" height="46" rx="13" fill="#F7B6C8"/><rect x="34" y="-8" width="26" height="46" rx="13" fill="#F7B6C8"/><rect x="-44" y="36" width="8" height="18" rx="3" fill="${C.choc}"/><rect x="36" y="36" width="8" height="18" rx="3" fill="${C.choc}"/>`+kawaii(0,-14,.9)+
+  `<rect x="-26" y="-2" width="30" height="20" rx="8" fill="#BFE6D2" transform="rotate(-10 -11 8)"/>`+A.blink(g(52,-48,.6,0,sparkle('#F5C451')),1.5)+g(-56,-46,.5,0,A.bob(`<text x="0" y="0" text-anchor="middle" font-family="${F.shr}" font-size="26" fill="${C.teal}">?</text>`,4,2));
+const mocktail=c=>`<path d="M-26 -30 L26 -30 C24 -4 10 4 0 6 C-10 4 -24 -4 -26 -30Z" fill="#fff" opacity=".75"/><path d="M-23 -22 L23 -22 C20 -4 9 2 0 3 C-9 2 -20 -4 -23 -22Z" fill="${c}"/><rect x="-2.5" y="5" width="5" height="30" fill="#fff" opacity=".85"/><ellipse cx="0" cy="36" rx="16" ry="4" fill="#fff" opacity=".85"/><path d="M-18 -26 L-14 -10" stroke="#fff" stroke-width="3" opacity=".8" stroke-linecap="round"/>`;
+const cheers=()=>g(-34,6,1,-16,mocktail('#F7A8B8')+g(18,-30,.5,0,lemonSlice())+`<path d="M-10 -30 L-24 -56" stroke="${C.plum}" stroke-width="1.5"/><path d="M-36 -58 Q-24 -72 -12 -58Z" fill="#9ED2B8"/>`)+g(34,6,1,16,mocktail('#FFD86A')+g(-16,-32,.45,0,`<circle r="8" fill="#F48A9E"/><path d="M0 -8 q2 -8 8 -10" stroke="${C.leaf2}" stroke-width="2" fill="none"/>`))+
+  A.blink(g(0,-46,1,0,sparkle('#F5C451')),1.1)+A.blink(g(-14,-58,.5,0,sparkle('#F7A8B8')),1.4,-.4)+A.blink(g(16,-60,.5,0,star('#9ED2B8',8)),1.3,-.7)+
+  [[-38,-8,0],[30,-6,-1],[-30,-14,-2]].map(([x,y,d])=>g(x,y,1,0,A.rise(`<circle r="2.6" fill="#fff"/>`,16,2,d))).join('');
+const smilePage=()=>{let s='';
+  s+=`<circle cx="200" cy="190" r="168" fill="#FFF0B8"/><circle cx="200" cy="190" r="168" fill="none" stroke="#FFE38A" stroke-width="6"/>`;
+  s+=`<path d="M128 118 q20 -22 40 0 M232 118 q20 -22 40 0" stroke="${C.ink}" stroke-width="8" fill="none" stroke-linecap="round"/>`;
+  s+=g(124,146,1,0,A.pulse(`<ellipse rx="18" ry="10" fill="#F7A8B8" opacity=".8"/>`,1.12,1.8))+g(276,146,1,0,A.pulse(`<ellipse rx="18" ry="10" fill="#F7A8B8" opacity=".8"/>`,1.12,1.8));
+  const L5=['S','M','I','L','E'],ang=[146,118,90,62,34],cols=['#F48A9E','#7FA7D9','#F5B83D','#7FC4A4','#B79BE8'];
+  L5.forEach((ch,i)=>{const a=ang[i]*Math.PI/180,x=200+150*Math.cos(a),y=96+150*Math.sin(a);
+    s+=g(x.toFixed(1),y.toFixed(1),1,0,A.bob(`<text x="0" y="0" text-anchor="middle" font-family="${F.shr}" font-size="66" fill="${cols[i]}" stroke="#fff" stroke-width="10" paint-order="stroke" stroke-linejoin="round" transform="rotate(${(ang[i]-90).toFixed(0)})" dominant-baseline="middle">${ch}</text>`,5,1.8,-i*.25));});
+  s+=[[60,60,0],[350,90,-1],[40,330,-2],[360,320,-.6]].map(([x,y,d])=>g(x,y,.6,0,A.blink(heart('#F7A8B8'),2,d))).join('');
+  return s;};
+
+/* ---- pages 129-133 ---- */
+const cartFace=()=>`<path d="M-70 -44 H-54 L-40 30 H42" stroke="${C.plum}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M-50 -30 H56 L46 14 H-42Z" fill="#B9D6F2"/><path d="M-30 -30 L-26 14 M-8 -30 L-6 14 M14 -30 L14 14 M36 -30 L32 14 M-46 -8 H52" stroke="#fff" stroke-width="2" opacity=".7"/><circle cx="-30" cy="42" r="8" fill="${C.plum}"/><circle cx="34" cy="42" r="8" fill="${C.plum}"/>`+kawaii(4,-6,.75)+
+  [[ -24,-70,'box','#F7A8B8',0],[16,-80,'heart','#F48A9E',-1.1],[0,-90,'box','#FFE69A',-2.2]].map(([x,y,k,c,d])=>g(x,y,1,0,A.fall(k==='box'?`<rect x="-10" y="-10" width="20" height="18" rx="3" fill="${c}"/><path d="M-10 -2 H10 M0 -10 V8" stroke="#fff" stroke-width="2"/>`:g(0,0,.6,0,heart(c)),46,2.4,d))).join('')+
+  g(52,-46,1,0,A.pulse(`<circle r="11" fill="#F48A9E"/><text x="0" y="5" text-anchor="middle" font-family="${F.fred}" font-weight="700" font-size="13" fill="#fff">+1</text>`,1.15,1.2));
+const bag=(c,h,wink)=>`<path d="M-12 -30 C-12 -44 12 -44 12 -30" stroke="${C.plum}" stroke-width="3.5" fill="none"/><path d="M-26 -30 L26 -30 L30 34 L-30 34Z" fill="${c}"/><path d="M-26 -30 L26 -30 L27 -20 L-27 -20Z" fill="#fff" opacity=".35"/>`+(wink?`<path d="M-12 0 q4 -4 8 0" stroke="${C.ink}" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M6 -2 l6 2 l-6 2" stroke="${C.ink}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M-5 8 q5 5 10 0" stroke="${C.ink}" stroke-width="2.4" fill="none" stroke-linecap="round"/><ellipse cx="-16" cy="8" rx="4.5" ry="2.8" fill="#F49BB2"/><ellipse cx="16" cy="8" rx="4.5" ry="2.8" fill="#F49BB2"/>`:kawaii(0,4,.8))+g(0,22,.45,0,h);
+const twinBags=()=>g(-40,6,1,-8,A.bob(bag('#F7B6C8',heart('#fff'),false),4,2))+g(40,6,1,8,A.bob(bag('#BFE6D2',heart('#fff'),true),4,2,-1))+
+  g(0,-52,1,-8,A.sway(`<path d="M-24 -12 H16 L28 0 L16 12 H-24Z" fill="#FFE69A"/><circle cx="16" cy="0" r="3" fill="#fff"/><text x="-6" y="6" text-anchor="middle" font-family="${F.shr}" font-size="17" fill="${C.deepRose}">1+1</text>`,6,2.4,28,0))+A.blink(g(-64,-40,.6,0,sparkle('#F5C451')),1.4)+A.blink(g(66,-30,.5,0,sparkle('#F7A8B8')),1.8,-.6);
+const crownApple=()=>`<path d="M0 -24 C-34 -40 -50 -4 -42 18 C-34 42 -14 50 0 42 C14 50 34 42 42 18 C50 -4 34 -40 0 -24Z" fill="#F48A9E"/><path d="M-26 -16 C-34 -8 -36 6 -32 14" stroke="#fff" stroke-width="5" fill="none" opacity=".55" stroke-linecap="round"/><path d="M0 -24 C0 -32 2 -38 6 -42" stroke="${C.choc}" stroke-width="3" fill="none" stroke-linecap="round"/>`+g(10,-38,.5,60,leaf(C.leaf2))+kawaii(0,10,.9)+
+  g(-4,-62,1,-8,A.bob(`<path d="M-22 6 L-24 -14 L-12 -4 L0 -20 L12 -4 L24 -14 L22 6Z" fill="#FFD86A"/><rect x="-22" y="4" width="44" height="7" rx="2" fill="#F5C451"/><circle cx="0" cy="-20" r="3" fill="#F48A9E"/><circle cx="-24" cy="-14" r="2.5" fill="#9ED2B8"/><circle cx="24" cy="-14" r="2.5" fill="#B9D6F2"/>`,3,2))+
+  A.blink(g(-52,-44,.7,0,sparkle('#F5C451')),1.5)+A.blink(g(54,-20,.55,0,sparkle('#F5C451')),1.9,-.7)+[[-58,40],[58,44],[-48,62]].map(([x,y],i)=>g(x,y,.9,0,`<ellipse rx="9" ry="4" fill="#F5C451"/><ellipse cy="-3" rx="9" ry="4" fill="#FFD86A"/>`)).join('');
+const starAngel=(c)=>A.flap(`<ellipse cx="-16" cy="-2" rx="13" ry="7" fill="#fff" transform="rotate(-25 -16 -2)"/><ellipse cx="16" cy="-2" rx="13" ry="7" fill="#fff" transform="rotate(25 16 -2)"/>`,.9)+star(c,18)+`<ellipse cx="0" cy="-24" rx="10" ry="3" fill="none" stroke="#FFE69A" stroke-width="2.5"/>`+kawaii(0,2,.45);
+const starAngels=()=>g(0,0,1.5,0,A.bob(starAngel('#FFE07A'),6,3))+g(-74,24,.9,0,A.bob(starAngel('#FFC9D6'),5,3.4,-1.2))+g(76,16,1,0,A.bob(starAngel('#C9EEDB'),5,2.8,-2));
+/* origami fox face: 6 little panels */
+const ORA='#FFB27A',ORB='#FFE0CC';
+const foldArrow=(d,c=C.plum)=>`<path d="${d}" stroke="${c}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+const arrowHead=(x,y,a)=>`<path d="M${x} ${y} l-6 -3 M${x} ${y} l-6 3" stroke="${C.plum}" stroke-width="2.2" fill="none" stroke-linecap="round" transform="rotate(${a} ${x} ${y})"/>`;
+const foxSteps=[
+  ['fold in half', `<path d="M0 -36 L36 0 L0 36 L-36 0Z" fill="#fff" stroke="#E8CDBA" stroke-width="1.5"/><path d="M-36 0 H36" stroke="#C9B6EA" stroke-width="2" stroke-dasharray="4 4"/>`+foldArrow('M4 30 C14 10 12 -12 2 -30')+arrowHead(2,-30,-100)],
+  ['fold the tip down', `<path d="M-44 22 H44 L0 -24Z" fill="${ORA}"/><path d="M-26 -4 H26" stroke="#fff" stroke-width="2" stroke-dasharray="4 4"/>`+foldArrow('M4 -18 C16 -6 14 8 6 16')+arrowHead(6,16,110)],
+  ['fold up the corners', `<path d="M-26 -16 H26 L46 14 H-46Z" fill="${ORA}"/><path d="M-26 -16 L0 14 L26 -16" stroke="#fff" stroke-width="2" stroke-dasharray="4 4" fill="none"/>`+foldArrow('M-40 8 C-40 -10 -26 -24 -12 -22')+arrowHead(-12,-22,0)+foldArrow('M40 8 C40 -10 26 -24 12 -22')+arrowHead(12,-22,180)],
+  ['turn it over', `<path d="M-32 0 L-7 -34 L0 -4 L7 -34 L32 0 L0 32Z" fill="${ORA}"/><path d="M0 -4 V32" stroke="#E89A66" stroke-width="1.2"/>`+foldArrow('M36 -6 C50 -14 52 8 40 10 C30 12 34 -2 44 0 L52 6')+arrowHead(52,6,35)],
+  ['draw a face!', A.bob(`<path d="M-42 0 L-10 -42 L-5 -4 L5 -4 L10 -42 L42 0 L0 40Z" fill="${ORA}"/><path d="M-42 0 H42" stroke="#E89A66" stroke-width="1.6"/><path d="M-22 10 q5 -5 10 0 M12 10 q5 -5 10 0" stroke="${C.ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="0" cy="30" r="6" fill="${C.ink}"/><circle cx="-2" cy="28" r="1.6" fill="#fff"/><ellipse cx="-24" cy="18" rx="4.5" ry="2.6" fill="#F49BB2"/><ellipse cx="24" cy="18" rx="4.5" ry="2.6" fill="#F49BB2"/>`,4,2)+A.blink(g(36,-30,.55,0,sparkle('#F5C451')),1.4)+A.blink(g(-40,-28,.4,0,sparkle('#F7A8B8')),1.8,-.6)],
+];
+const foxCraft=()=>{let s=dotsGrid('#FFD9BF',24,1.6,.6);
+  s+=T('CRAFTY PROJECT',200,30,{f:F.fred,w:600,s:12,ls:4,c:C.plum,op:.75});
+  s+=T('Origami Fox Face',200,72,{f:F.pac,s:36,c:C.deepRose,st:'#fff',sw:8,max:330});
+  const cols=['#FFF8EE','#FDEEF2','#EEF7F1','#EEF2FB','#FFF3DC'];
+  const pos=[[70,150],[200,150],[330,150],[135,290],[265,290]];
+  foxSteps.forEach(([cap,art],i)=>{const [cx,cy]=pos[i];
+    s+=`<rect x="${cx-58}" y="${cy-54}" width="116" height="126" rx="16" fill="${cols[i]}" stroke="#F7D4C0" stroke-width="2"/>`;
+    s+=`<circle cx="${cx-46}" cy="${cy-42}" r="12" fill="${PASTELS[i%6]}"/>`+T(String(i+1),cx-46,cy-37,{f:F.fred,w:700,s:14,c:C.ink});
+    s+=g(cx,cy+4,1,0,art)+T(cap,cx,cy+62,{f:F.cav,s:18,w:700,c:C.plum,max:108});});
+  s+=g(200,222,.6,0,A.blink(sparkle('#F5C451'),1.6))+g(352,330,.5,0,A.blink(heart(C.rose),2,-.8))+g(48,330,.5,0,A.blink(star('#F5C451',10),1.8,-.4));
+  return s;};
+
+
 /* ============ more illustrations ============ */
 const snail=(sh,bd)=>`<path d="M-44 22 C-44 10 -34 8 -22 10 L34 10 C46 10 48 22 40 24 L-38 24 C-42 24 -44 23 -44 22Z" fill="${bd}"/><path d="M-36 14 C-44 -4 -34 -16 -24 -8 L-18 12Z" fill="${bd}"/><path d="M-32 -10 L-38 -24 M-26 -10 L-24 -26" stroke="${bd}" stroke-width="3" stroke-linecap="round"/><circle cx="-38" cy="-25" r="3.5" fill="${C.ink}"/><circle cx="-24" cy="-27" r="3.5" fill="${C.ink}"/><circle cx="6" cy="-10" r="24" fill="${sh}"/><path d="M6 -10 m-3 0 a3 3 0 1 1 6 0 a7 7 0 1 1 -14 0 a11 11 0 1 1 22 0 a15 15 0 1 1 -30 0 a19 19 0 0 1 38 0" stroke="#fff" stroke-width="3" fill="none" opacity=".7" stroke-linecap="round"/><path d="M-32 2 q3 3 6 0" stroke="${C.ink}" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="-36" cy="6" rx="3" ry="2" fill="#F49BB2"/>`;
 const mushroom=c=>`<path d="M-13 0 C-15 20 -11 34 0 34 C11 34 15 20 13 0Z" fill="#FFF3E6"/><path d="M-40 4 C-40 -32 40 -32 40 4 Q0 12 -40 4Z" fill="${c}"/><circle cx="-18" cy="-10" r="6" fill="#fff" opacity=".85"/><circle cx="8" cy="-18" r="4.5" fill="#fff" opacity=".85"/><circle cx="22" cy="-4" r="5" fill="#fff" opacity=".85"/>`+kawaii(0,18,.42);
@@ -849,6 +920,18 @@ q('hero','#FDE4EA',[['I love you','pac',68,'rose']],otters(),{my:150,ms:1.45,ly1
 {bg:'#FDEEF2',ink:C.plum,art:bloomsPage},
 {bg:'#FFF6E2',ink:C.plum,art:richPage},
 {bg:'#EAE9FA',ink:C.plum,art:voicePage},
+q('hero','#E6F4EC',[['always be','cav',48,'plum'],['grateful','pac',66,'rose']],panda(),{my:124,ms:1.3,ly1:218,deco:softDisc(200,124,92)+confetti(122,10,['#fff','#F7B6C8'],[[20,200,380,380]])}),
+q('hero','#FFF6DA',[['keep','ama',60,'plum'],['learning','pac',64,'teal']],bulb(),{my:132,ms:1.25,ly1:222,deco:confetti(123,10,['#F5C451','#fff'],[[20,210,380,380],[90,20,310,210]])}),
+q('low','#E9F0FB',[['age is just','cav',48,'plum'],['a number','shr',64,'coral']],turtle(),{my:298,ms:1.4,ly2:196,deco:softDisc(210,300,96)+confetti(124,12,['#fff','#F7A8B8','#FFE69A'],[[20,20,380,210]])}),
+q('side','#FDEAF0',[['it’s','cav',46,'plum'],['never','shr',64,'rose'],['too late','pac',54,'teal']],clock(),{ms:1.5,mx:300,my:206,deco:softDisc(300,206,90)+confetti(125,10,['#fff','#B9D6F2'],[[20,40,240,360],[210,100,390,310]])}),
+q('side','#FFF1E6',[['if you are','cav',42,'plum'],['N.I.T.,','bun',54,'coral'],['you are','cav',42,'plum'],['E.','shr',76,'teal'],['( furniture )','ama',28,'plum']],armchair(),{ms:1.35,mx:296,my:214,deco:softDisc(296,214,92)}),
+{bg:'#FFF8E6',ink:C.plum,art:smilePage},
+q('hero','#EFE6FA',[['happy','pac',72,'rose'],['HOUR','bun',66,'teal']],cheers(),{my:126,ms:1.5,ly1:218,deco:softDisc(200,118,92)+confetti(128,14,['#fff','#F5C451','#F7A8B8'],[[20,200,380,380]])}),
+q('hero','#EAF3FB',[['add to','cav',50,'plum'],['CART','bun',78,'coral']],cartFace(),{my:132,ms:1.35,ly1:226,deco:softDisc(200,128,96)+confetti(129,12,['#fff','#F7A8B8','#FFE69A'],[[20,210,380,380]])}),
+q('hero','#FFF1E6',[['buy one,','pac',58,'rose'],['GET ONE','shr',58,'teal']],twinBags(),{my:128,ms:1.4,ly1:222,deco:softDisc(200,128,96)+confetti(130,12,['#fff','#F5C451'],[[20,210,380,380]])}),
+q('side','#EAF6EE',[['health','pac',60,'green'],['is','cav',44,'plum'],['WEALTH','shr',54,'gold']],crownApple(),{ms:1.3,mx:306,my:216,max:180,deco:softDisc(306,212,84)+confetti(131,10,['#fff','#F5C451'],[[20,40,230,360]])}),
+{type:'craft',bg:'#FFF4EA',ink:C.plum,art:foxCraft},
+q('hero','#D9DAF5',[['the stars are','ama',48,'plum'],['your guardian','cav',46,'plum'],['angels','pac',70,'white']],starAngels(),{my:104,ms:1.15,ly1:182,deco:stars(133,30,['#fff','#FFE9A8']).replace(/<g transform="translate\(([\d.]+) ([\d.]+)\)/g,(m,a,b)=>+b>170?'<g opacity="0" transform="translate('+a+' '+b+')':m)+softDisc(200,104,70,'#fff',.35)}),
 ];
 
 function renderImage(p){return `<image href="${p.src}" x="0" y="0" width="400" height="${p.caption?340:400}" preserveAspectRatio="xMidYMid ${p.fit||'slice'}"/>`+(p.caption?T(p.caption,200,376,{f:F.cav,s:30,w:700,c:p.ink||C.plum,max:360}):'');}
@@ -895,7 +978,7 @@ function renderCraft(p){
   return s;
 }
 function pageSVG(p){
-  let inner=p.tpl?TPL[p.tpl](p):p.type==='recipe'?renderRecipe(p):p.type==='list'?renderList(p):p.type==='craft'?renderCraft(p):p.type==='image'?renderImage(p):p.art();
+  let inner=p.tpl?TPL[p.tpl](p):p.type==='recipe'?renderRecipe(p):p.type==='list'?renderList(p):p.type==='craft'?(p.steps?renderCraft(p):p.art()):p.type==='image'?renderImage(p):p.art();
   return `<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img"><rect width="400" height="400" fill="${p.bg}"/>${inner}<text x="384" y="392" text-anchor="end" font-family="${F.fred}" font-size="10" letter-spacing="2" fill="${C.ink}" opacity=".45">${p.num}</text></svg>`;
 }
 function coverSVG(){
