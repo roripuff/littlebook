@@ -732,6 +732,99 @@ const foxCraft=()=>{let s=dotsGrid('#FFD9BF',24,1.6,.6);
   return s;};
 
 
+/* ---- pages added 27 Nov ---- */
+const puppy=()=>`<ellipse cx="0" cy="40" rx="34" ry="26" fill="#F3DCC6"/><ellipse cx="-16" cy="62" rx="10" ry="6" fill="#E8C5AA"/><ellipse cx="16" cy="62" rx="10" ry="6" fill="#E8C5AA"/>`+
+  A.sway(`<ellipse cx="34" cy="10" rx="9" ry="16" fill="#F3DCC6"/><ellipse cx="36" cy="-4" rx="9" ry="8" fill="#F3DCC6"/>`,18,1,24,30)+
+  `<ellipse cx="-34" cy="-14" rx="12" ry="22" fill="#C9A58A" transform="rotate(18 -34 -14)"/><ellipse cx="34" cy="-14" rx="12" ry="22" fill="#C9A58A" transform="rotate(-18 34 -14)"/><circle cx="0" cy="-10" r="32" fill="#F3DCC6"/><ellipse cx="12" cy="-20" rx="10" ry="9" fill="#E8C5AA"/><ellipse cx="0" cy="2" rx="13" ry="9" fill="#FFF3E6"/><ellipse cx="0" cy="-2" rx="5" ry="3.6" fill="${C.ink}"/>`+
+  `<circle cx="-12" cy="-14" r="3.4" fill="${C.ink}"/><circle cx="12" cy="-14" r="3.4" fill="${C.ink}"/><circle cx="-11" cy="-15" r="1.1" fill="#fff"/><circle cx="13" cy="-15" r="1.1" fill="#fff"/><path d="M-5 6 q5 5 10 0" stroke="${C.ink}" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M-2 9 q2 7 6 0" fill="#F48A9E"/><ellipse cx="-20" cy="-2" rx="5" ry="3" fill="#F49BB2"/><ellipse cx="20" cy="-2" rx="5" ry="3" fill="#F49BB2"/>`+
+  `<path d="M-30 22 C-24 34 24 34 30 22" stroke="#F48A9E" stroke-width="5" fill="none"/><circle cx="0" cy="32" r="5" fill="#FFD86A"/>`+A.blink(g(-52,-44,.6,0,heart(C.rose)),1.6)+A.blink(g(56,-50,.45,0,sparkle('#F5C451')),1.9,-.6);
+const smiley=c=>`<circle r="20" fill="${c}"/><circle cx="-7" cy="-5" r="2.6" fill="${C.ink}"/><circle cx="7" cy="-5" r="2.6" fill="${C.ink}"/><path d="M-9 4 q9 10 18 0" stroke="${C.ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
+const RED='#F07079';
+const paintTown=()=>{let s='';
+  const H=[[-80,10,30,46,'#B9D6F2'],[-46,0,28,56,'#FFE69A'],[-14,-10,30,66,'#C9EEDB'],[20,4,28,52,'#D4C5F0'],[52,-4,30,60,'#FFD3B6']];
+  H.forEach(([x,y,w,h,c])=>{s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/><path d="M${x-3} ${y} L${x+w/2} ${y-14} L${x+w+3} ${y}Z" fill="${c}" opacity=".85"/><rect x="${x+w/2-4}" y="${y+h-14}" width="8" height="14" rx="2" fill="#fff" opacity=".8"/><rect x="${x+6}" y="${y+10}" width="6" height="7" fill="#fff" opacity=".8"/><rect x="${x+w-12}" y="${y+10}" width="6" height="7" fill="#fff" opacity=".8"/>`;});
+  // the red paint sweeps across the town, then the roller rolls back
+  s+=`<path d="M-90 -2 C-50 -10 -10 6 30 -4 C60 -10 80 0 92 -6" stroke="${RED}" stroke-width="16" fill="none" stroke-linecap="round" opacity=".85" pathLength="100" stroke-dasharray="100" stroke-dashoffset="0"><animate attributeName="stroke-dashoffset" values="100;0;0;100" keyTimes="0;.45;.8;1" dur="4s" repeatCount="indefinite"/></path>`;
+  s+=`<g><animateTransform attributeName="transform" type="translate" values="-90 -16;92 -20;92 -20;-90 -16" keyTimes="0;.45;.8;1" dur="4s" repeatCount="indefinite"/><rect x="-18" y="-12" width="36" height="16" rx="7" fill="${RED}"/><path d="M18 -4 h8 v-22 h-30 v-10" stroke="${C.plum}" stroke-width="3.5" fill="none" stroke-linejoin="round"/><rect x="-10" y="-46" width="12" height="16" rx="4" fill="#FFE69A"/></g>`;
+  s+=[[-70,24],[0,30],[64,22]].map(([x,y],i)=>g(x,y,.5,0,A.blink(drop(RED),1.4,-i*.4,.2))).join('');
+  return s;};
+const pineapple=()=>A.sway(`<path d="M0 -36 L-8 -62 L0 -50 L6 -68 L10 -48 L22 -60 L14 -36Z" fill="#8CC59A"/><path d="M-6 -36 L-20 -54 L-2 -44Z" fill="#7FB98C"/><ellipse cx="0" cy="8" rx="34" ry="46" fill="#FFD86A"/>`+
+  [-24,-12,0,12,24].map(x=>`<path d="M${x-14} -30 L${x+14} 46" stroke="#F5B83D" stroke-width="2" opacity=".7"/><path d="M${x+14} -30 L${x-14} 46" stroke="#F5B83D" stroke-width="2" opacity=".7"/>`).join('')+kawaii(0,6,.9)+
+  `<path d="M-32 0 C-48 -6 -54 -22 -48 -30" stroke="#FFD86A" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M32 6 C46 14 52 22 50 32" stroke="#FFD86A" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M-14 52 v14 M14 52 v14" stroke="#F5B83D" stroke-width="7" stroke-linecap="round"/>`,8,1.6,0,60)+
+  g(-66,-30,1,-10,A.bob(note(C.plum),8,1.6))+g(60,-48,.8,10,A.bob(note(C.rose),8,1.6,-.8));
+const popper=()=>`<path d="M-30 50 L-6 -6 L22 10Z" fill="#B9D6F2"/><path d="M-26 40 L-10 4 M-18 46 L4 -2 M-10 48 L14 4" stroke="#fff" stroke-width="3" opacity=".7"/><path d="M-6 -6 L22 10" stroke="#F7A8B8" stroke-width="6" stroke-linecap="round"/>`+
+  [[30,-40,'#F7A8B8'],[48,-12,'#FFD86A'],[10,-60,'#9ED2B8'],[58,-46,'#B79BE8'],[-14,-48,'#FFC9A8'],[40,-70,'#F48A9E'],[64,-24,'#9FC6EA']].map(([x,y,c],i)=>g(8,2,1,0,A.drift(i%2?`<rect x="-3" y="-7" width="6" height="14" rx="3" fill="${c}" transform="rotate(${i*40})"/>`:`<circle r="4.5" fill="${c}"/>`,x,y,1.8,-i*.25))).join('')+
+  [[38,-56],[22,-30],[56,-8]].map(([x,y],i)=>`<path d="M${x} ${y} q8 -6 4 -16" stroke="${['#F48A9E','#9ED2B8','#F5B83D'][i]}" stroke-width="3" fill="none" stroke-linecap="round"/>`).join('')+A.blink(g(-40,-30,.7,0,sparkle('#F5C451')),1.2);
+const calendarGift=()=>`<rect x="-42" y="-34" width="92" height="88" rx="10" fill="#7FB89A" opacity=".35"/><rect x="-46" y="-40" width="92" height="88" rx="10" fill="#fff" stroke="#F4A3B6" stroke-width="2.5"/><rect x="-46" y="-40" width="92" height="26" rx="10" fill="#F48A9E"/><rect x="-46" y="-24" width="92" height="10" fill="#F48A9E"/><circle cx="-24" cy="-40" r="5" fill="${C.plum}"/><circle cx="24" cy="-40" r="5" fill="${C.plum}"/>`+
+  `<text x="0" y="-21" text-anchor="middle" font-family="${F.fred}" font-weight="700" font-size="13" letter-spacing="3" fill="#fff">TODAY</text><text x="0" y="28" text-anchor="middle" font-family="${F.shr}" font-size="40" fill="${C.plum}">♥</text>`+
+  `<rect x="-6" y="-14" width="12" height="62" fill="#9ED2B8" opacity=".9"/><rect x="-46" y="10" width="92" height="12" fill="#9ED2B8" opacity=".9"/>`+
+  g(0,14,1,0,A.pulse(`<ellipse cx="-14" cy="-6" rx="14" ry="9" fill="none" stroke="#7FC4A4" stroke-width="6" transform="rotate(-20 -14 -6)"/><ellipse cx="14" cy="-6" rx="14" ry="9" fill="none" stroke="#7FC4A4" stroke-width="6" transform="rotate(20 14 -6)"/><circle r="6" fill="#7FC4A4"/>`,1.08,1.6))+A.blink(g(-56,-48,.6,0,sparkle('#F5C451')),1.5)+A.blink(g(58,40,.5,0,sparkle('#F7A8B8')),1.9,-.7);
+const octopus=()=>[-40,-24,-8,8,24,40].map((x,i)=>A.sway(`<path d="M${x} 10 C${x-6} 30 ${x+10} 40 ${x+2} 56 C${x-4} 62 ${x+8} 66 ${x+12} 60" stroke="#C9B6EA" stroke-width="11" fill="none" stroke-linecap="round"/>`,6,1.6+i*.15,x,10,-i*.3)).join('')+
+  `<ellipse cx="0" cy="-10" rx="44" ry="40" fill="#D4C5F0"/><circle cx="-26" cy="-34" r="6" fill="#fff" opacity=".4"/><path d="M-16 -12 q4 -5 8 0 M8 -12 q4 -5 8 0" stroke="${C.ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="2" rx="6" ry="5" fill="#F48A9E"/><ellipse cx="-24" cy="-2" rx="6" ry="3.5" fill="#F49BB2"/><ellipse cx="24" cy="-2" rx="6" ry="3.5" fill="#F49BB2"/>`+
+  [[-50,-50,0],[40,-60,-1],[60,-30,-2]].map(([x,y,d])=>g(x,y,.55,0,A.drift(heart(['#F48A9E','#F7B6C8','#FFC9D6'][Math.abs(d)]),10,-30,3,d))).join('')+
+  g(52,-14,1,-10,`<path d="M-6 -4 C-12 -14 0 -16 0 -8 C0 -16 12 -14 6 -4 C3 2 0 4 0 4 C0 4 -3 2 -6 -4Z" fill="#F07079" opacity=".85"/>`);
+const fullMoon=()=>A.pulse(`<circle r="70" fill="#FFF6C9" opacity=".35"/>`,1.08,3)+`<circle r="52" fill="#FFF0B3"/><circle cx="-22" cy="-24" r="8" fill="#FBE29A" opacity=".8"/><circle cx="26" cy="18" r="6" fill="#FBE29A" opacity=".8"/><circle cx="20" cy="-30" r="4" fill="#FBE29A" opacity=".8"/>`+
+  `<path d="M-22 -2 q6 -7 12 0 M10 -2 q6 -7 12 0" stroke="${C.ink}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M-12 12 q12 14 24 0" stroke="${C.ink}" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="-30" cy="10" rx="7" ry="4" fill="#F7A8B8" opacity=".85"/><ellipse cx="30" cy="10" rx="7" ry="4" fill="#F7A8B8" opacity=".85"/>`+
+  g(-62,36,.9,0,A.bob(cloud('#fff'),3,4))+g(64,40,.7,0,A.bob(cloud('#fff'),3,5,-2));
+
+/* ---- 27 Nov (2) ---- */
+const mailbox=()=>`<rect x="-4" y="20" width="8" height="46" fill="#B58A72"/><path d="M-40 -6 C-40 -40 40 -40 40 -6 V28 H-40Z" fill="#F7B6C8"/><path d="M-40 -6 C-40 -40 40 -40 40 -6" stroke="#fff" stroke-width="3" fill="none" opacity=".5"/><rect x="-40" y="-6" width="80" height="34" fill="#F7B6C8"/>`+
+  `<path d="M40 -10 V-40 H60 V-28 H44" fill="#F48A9E"/>`+kawaii(0,8,.8)+
+  g(-6,-42,1,0,A.bob(`<rect x="-20" y="-14" width="40" height="28" rx="3" fill="#FFF3D6" stroke="#F4C66A" stroke-width="2"/><path d="M-20 -14 L0 2 L20 -14" stroke="#F4C66A" stroke-width="2" fill="none"/>`+g(0,6,.35,0,heart('#F48A9E')),6,2.4))+
+  [[-46,-60,0],[30,-74,-1.2],[52,-50,-2.2]].map(([x,y,d])=>g(x,y,.4,0,A.rise(heart('#F7A8B8'),26,3,d))).join('')+g(-34,66,.5,0,flower('#FFE69A',C.rose))+g(34,66,.45,0,daisy())+g(-50,60,.4,0,sprig(C.leaf2,2));
+const hammock=()=>`<path d="M-80 60 V-30 M80 60 V-30" stroke="#B58A72" stroke-width="7" stroke-linecap="round"/><circle cx="-80" cy="-40" r="24" fill="#9ED2B8"/><circle cx="-94" cy="-28" r="16" fill="#8CC59A"/><circle cx="80" cy="-40" r="24" fill="#9ED2B8"/><circle cx="94" cy="-28" r="16" fill="#8CC59A"/>`+
+  A.sway(`<path d="M-78 -16 L-56 6 M78 -16 L56 6" stroke="${C.plum}" stroke-width="1.6"/><path d="M-58 4 C-30 40 30 40 58 4 C30 22 -30 22 -58 4Z" fill="#F7B6C8"/><path d="M-50 10 C-24 34 24 34 50 10" stroke="#fff" stroke-width="2" stroke-dasharray="3 5" fill="none"/>`+
+    `<rect x="-26" y="2" width="24" height="16" rx="2" fill="#B9D6F2" transform="rotate(-12 -14 10)"/><path d="M-14 3 V17" stroke="#fff" stroke-width="1.5" transform="rotate(-12 -14 10)"/>`+g(14,10,1,0,`<ellipse rx="16" ry="8" fill="#FFE6D2"/>`+kawaii(4,-1,.4)),4,4,0,-16)+
+  g(30,-50,1,0,A.rise(`<text font-family="${F.cav}" font-weight="700" font-size="18" fill="${C.plum}">z</text>`,20,3))+g(42,-62,1,0,A.rise(`<text font-family="${F.cav}" font-weight="700" font-size="22" fill="${C.plum}">z</text>`,20,3,-1.5))+
+  `<ellipse cx="0" cy="62" rx="96" ry="8" fill="#BFE6C6"/>`+g(56,50,.5,0,mug('#FFE69A'));
+const toothLeaf=c=>`<path d="M0 0 C-2 -6 -8 -8 -6 -12 L-1 -12 C-4 -18 -10 -20 -8 -26 L-2 -24 C-4 -32 -8 -36 -4 -44 C2 -36 6 -28 4 -20 L8 -22 C8 -16 6 -12 3 -8 L7 -8 C6 -4 3 -1 0 0Z" fill="${c}"/><path d="M0 0 C0 -14 0 -28 -3 -40" stroke="#fff" stroke-width="1.2" opacity=".5" fill="none"/>`;
+const dandelionHead=()=>[[30,10,1.9,'#F7C948'],[24,7.6,1.8,'#FFD84D'],[18,5.4,1.7,'#FFE066'],[12,3.4,1.5,'#FFEC8F']].map(([n,len,w,c],k)=>Array.from({length:n},(_,i)=>`<ellipse cx="0" cy="${-len}" rx="${w}" ry="${len}" fill="${c}" transform="rotate(${(i*360/n+k*7).toFixed(1)})"/>`).join('')).join('')+`<circle r="3" fill="#FFEC8F"/>`;
+const seedPuff=()=>Array.from({length:24},(_,i)=>{const a=i*Math.PI*2/24,x=Math.cos(a)*16,y=Math.sin(a)*16;return `<path d="M0 0 L${x.toFixed(1)} ${y.toFixed(1)}" stroke="#fff" stroke-width="1.2"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.8" fill="#fff" stroke="#E2DCCB" stroke-width=".8"/>`;}).join('')+`<circle r="3.5" fill="#C9B98F"/>`;
+const crackDandelion=()=>`<rect x="-90" y="20" width="180" height="40" fill="#E7E3EF"/>${[-60,-20,20,60].map(x=>`<path d="M${x} 20 V60" stroke="#D6D0E2" stroke-width="2"/>`).join('')}<path d="M-6 20 L-2 30 L-8 40 L-1 52 L-6 60" stroke="#B8B0C9" stroke-width="3" fill="none" stroke-linejoin="round"/>`+
+  g(-10,22,.9,-62,toothLeaf('#8CC59A'))+g(-4,22,.8,-30,toothLeaf('#7FB98C'))+g(2,22,.9,60,toothLeaf('#8CC59A'))+g(-2,22,.75,25,toothLeaf('#7FB98C'))+
+  `<path d="M-2 20 C-4 0 3 -20 0 -40" stroke="#9ACD7E" stroke-width="3.5" fill="none" stroke-linecap="round"/>`+
+  g(0,-44,1.25,0,A.sway(`<path d="M-6 6 C-4 12 4 12 6 6" fill="#8CC59A"/>`+dandelionHead(),5,3,0,50))+
+  `<path d="M-8 20 C-16 0 -30 -10 -36 -26" stroke="#9ACD7E" stroke-width="2.5" fill="none" stroke-linecap="round"/>`+g(-38,-30,1.2,0,A.sway(seedPuff(),4,3.4,0,40,-1))+
+  [[-24,-46,0],[-14,-60,-1.4],[-30,-70,-2.6],[40,-30,-3.4]].map(([x,y,d])=>g(x,y,1,0,A.drift(`<path d="M0 0 v7" stroke="#fff" stroke-width="1.4"/><circle r="3" fill="#fff"/>`,46,-30,4.4,d))).join('');  `<path d="M-2 22 C-4 0 4 -20 0 -40" stroke="${C.leaf2}" stroke-width="4" fill="none"/>`+g(-4,14,.7,-70,`<path d="M0 0 C6 -6 4 -14 10 -18 C8 -24 14 -30 12 -36 C4 -30 2 -20 -2 -12 C-4 -6 -2 -2 0 0Z" fill="${C.leaf}"/>`)+g(2,14,.7,70,`<path d="M0 0 C6 -6 4 -14 10 -18 C8 -24 14 -30 12 -36 C4 -30 2 -20 -2 -12 C-4 -6 -2 -2 0 0Z" fill="${C.leaf2}"/>`)+
+  g(0,-46,1,0,A.sway(Array.from({length:20},(_,i)=>`<ellipse cx="0" cy="-12" rx="3.2" ry="11" fill="${i%2?'#FFD86A':'#FFE07A'}" transform="rotate(${i*18})"/>`).join('')+Array.from({length:12},(_,i)=>`<ellipse cx="0" cy="-7" rx="2.6" ry="7" fill="#F5C451" transform="rotate(${i*30+15})"/>`).join('')+kawaii(0,0,.4),6,3,0,40))+
+  g(-50,8,.55,0,`<path d="M0 12 C-2 4 2 -2 0 -8" stroke="${C.leaf2}" stroke-width="3" fill="none"/>`+g(0,-12,1,0,Array.from({length:14},(_,i)=>`<ellipse cx="0" cy="-8" rx="2.4" ry="8" fill="#FFE07A" transform="rotate(${i*26})"/>`).join('')))+
+  [[44,-30,0],[60,-50,-1.4],[30,-70,-2.6]].map(([x,y,d])=>g(x,y,1,0,A.drift(`<path d="M0 0 v7" stroke="#fff" stroke-width="1.4"/><circle r="3" fill="#fff"/>`,40,-30,4.4,d))).join('');
+const flamingoSunset=()=>`<circle cx="0" cy="10" r="56" fill="#FFC9A0"/><circle cx="0" cy="10" r="44" fill="#FFB38A"/>`+[[22,4],[34,6],[46,8]].map(([y,h])=>`<rect x="-60" y="${y}" width="120" height="${h}" fill="#FFE2D0"/>`).join('')+
+  `<path d="M-104 44 q13 -6 26 0 t26 0 t26 0 t26 0 t26 0 t26 0 t26 0 t26 0 V76 Q0 92 -104 76Z" fill="#F6C9D6"/>`+[48,58,68].map((y,i)=>A.blink(`<path d="M${-40+i*10} ${y} h${80-i*20}" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>`,2.4,-i*.6,.3)).join('')+
+  g(56,30,1,0,`<path d="M0 10 V36 M4 10 L10 22 L4 36" stroke="#F48A9E" stroke-width="2" fill="none"/><ellipse cx="0" cy="0" rx="16" ry="11" fill="#F48A9E"/><path d="M-8 -4 C-14 -22 2 -34 4 -46" stroke="#F48A9E" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="4" cy="-48" r="6" fill="#F48A9E"/><path d="M8 -48 L16 -44 L10 -40Z" fill="${C.ink}"/><path d="M-8 -6 C-2 -2 8 -2 12 4" stroke="#F7A8B8" stroke-width="3" fill="none"/>`)+
+  [[-50,-50,0],[-30,-62,-.6]].map(([x,y,d])=>g(x,y,.8,0,A.bob(A.flap(gull,.9,d),4,3,d))).join('');
+
+/* ---- 27 Nov (3) ---- */
+const xmasTree=()=>{let s=`<rect x="-8" y="44" width="16" height="16" rx="3" fill="#B58A72"/><path d="M0 -50 L34 -6 H18 L46 26 H26 L56 52 H-56 L-26 26 H-46 L-18 -6 H-34Z" fill="#9ED2B8"/><path d="M0 -50 L14 -32" stroke="#fff" stroke-width="3" opacity=".4" stroke-linecap="round"/>`;
+  s+=`<path d="M-26 -10 C-10 0 14 -2 26 -12 M-38 22 C-12 34 16 32 38 20 M-48 48 C-16 60 20 58 48 46" stroke="${C.plum}" stroke-width="1.4" fill="none" opacity=".5"/>`;
+  const B=[[-20,-6],[-6,-3],[8,-4],[20,-9],[-32,25],[-16,29],[0,30],[16,29],[32,24],[-42,50],[-24,55],[-6,57],[12,56],[30,53],[44,48]];
+  B.forEach(([x,y],i)=>{const c=['#F48A9E','#FFD86A','#7FA7D9','#B79BE8','#F7A8B8'][i%5];s+=A.blink(`<circle cx="${x}" cy="${y+3}" r="7" fill="${c}" opacity=".35"/><ellipse cx="${x}" cy="${y+3}" rx="3.2" ry="4.2" fill="${c}"/>`,1.2+(i%3)*.3,-(i%4)*.35,.25);});
+  s+=g(0,-54,1,0,A.pulse(star('#FFD86A',14),1.15,1.4))+g(-60,40,.7,0,gift('#F7B6C8','#9ED2B8'))+g(62,44,.55,0,gift('#B9D6F2','#F7A8B8'));
+  return s;};
+const sundae=()=>`<path d="M-30 -10 L30 -10 L20 40 Q19 46 12 46 L-12 46 Q-19 46 -20 40Z" fill="#fff" opacity=".7"/><path d="M-27 8 L27 8 L23 26 L-23 26Z" fill="#F7B6C8"/><path d="M-23 26 L23 26 L20 40 Q19 44 12 44 L-12 44 Q-19 44 -20 40Z" fill="#FFE9B0"/><path d="M-28 -2 L28 -2 L27 8 L-27 8Z" fill="#9A6B55"/><rect x="-4" y="46" width="8" height="14" fill="#fff" opacity=".8"/><ellipse cx="0" cy="62" rx="20" ry="5" fill="#fff" opacity=".85"/>`+
+  `<circle cx="-14" cy="-16" r="16" fill="#BFE6D2"/><circle cx="14" cy="-16" r="16" fill="#FFF0B3"/><circle cx="0" cy="-32" r="17" fill="#F7B6C8"/><path d="M-26 -10 Q-22 2 -16 -6 Q-10 4 -4 -6 Q2 4 8 -6 Q14 4 20 -6 Q24 2 28 -10Z" fill="#9A6B55"/>`+
+  sprinkles([[-8,-38,30,C.blue],[6,-40,-30,C.lemon],[12,-28,70,C.teal],[-16,-24,-60,'#fff'],[18,-18,20,C.rose],[-22,-14,40,C.lemon]])+
+  `<rect x="22" y="-40" width="10" height="34" rx="3" fill="#F3C98E" transform="rotate(20 27 -23)"/><path d="M24 -36 l8 4 M23 -28 l8 4 M22 -20 l8 4" stroke="#E0A964" stroke-width="1.5" transform="rotate(20 27 -23)"/>`+
+  g(-1,-54,1,0,A.bob(`<circle r="7" fill="#EE6F8A"/><circle cx="-2" cy="-2" r="2" fill="#fff" opacity=".6"/><path d="M0 -7 q3 -10 10 -12" stroke="${C.leaf2}" stroke-width="2" fill="none"/>`,4,1.6))+
+  `<rect x="-44" y="-8" width="6" height="56" rx="3" fill="#C9B6EA" transform="rotate(-14 -41 20)"/><ellipse cx="-47" cy="-12" rx="7" ry="10" fill="#C9B6EA" transform="rotate(-14 -47 -12)"/>`+A.blink(g(44,-50,.6,0,sparkle('#F5C451')),1.5);
+const shootingStar=()=>[['#F7A8B8',0],['#FFD86A',7],['#9ED2B8',14],['#B9D6F2',21]].map(([c,o])=>`<path d="M-90 ${40+o} C-50 ${36+o} -20 ${16+o} 4 ${-2+o}" stroke="${c}" stroke-width="7" fill="none" stroke-linecap="round" opacity=".85"/>`).join('')+
+  [[-70,30,0],[-46,14,-.4],[-24,0,-.8],[-80,52,-1.2]].map(([x,y,d])=>A.blink(g(x,y,.5,0,sparkle('#fff')),1.2,d,0)).join('')+
+  g(14,-6,1,0,A.bob(A.pulse(`<circle r="40" fill="#FFF3B0" opacity=".45"/>`,1.15,1.6)+star('#FFD86A',30)+kawaii(0,4,.7),5,2.4))+A.blink(g(52,-36,.7,0,sparkle('#F5C451')),1.3)+A.blink(g(56,24,.5,0,star('#fff',8)),1.7,-.5);
+
+/* rainbow-letter word: each letter its own colour, with a little bounce */
+function rainbowWord(t,x,y,o={}){const cols=o.cols||['#F48A9E','#F5B83D','#7FC4A4','#7FA7D9','#B79BE8','#F28C6F'];const ch=[...t];
+  const dy=ch.map((c,i)=>i===0?0:((i%2?-1:1)*(o.amp??5)*2).toFixed(0));
+  return `<text x="${x}" y="${y}" text-anchor="middle" font-family="${o.f}" font-size="${o.s}" stroke="#fff" stroke-width="${o.sw||9}" paint-order="stroke" stroke-linejoin="round" data-maxw="${o.max||340}">${ch.map((c,i)=>`<tspan fill="${cols[i%cols.length]}" dy="${i===0?(o.amp??5):dy[i]}">${esc(c)}</tspan>`).join('')}</text>`;}
+const celebrationPage=()=>{let s='';
+  s+=softDisc(200,112,92)+confetti(136,22,['#F7A8B8','#FFD86A','#9ED2B8','#B9D6F2','#D4C5F0'],[[30,180,370,360],[110,20,290,200]]);
+  s+=g(196,118,1.25,0,popper());
+  // garland of little flags across the top
+  s+=`<path d="M-10 18 Q200 70 410 18" stroke="${C.plum}" stroke-width="1.2" fill="none" opacity=".5"/>`+Array.from({length:11},(_,i)=>{const t=(i+.5)/11,x=-10+420*t,y=18+2*t*(1-t)*52;return `<path d="M${(x-9).toFixed(0)} ${(y-1).toFixed(0)} L${(x+9).toFixed(0)} ${(y+1).toFixed(0)} L${x.toFixed(0)} ${(y+18).toFixed(0)}Z" fill="${PASTELS[i%6]}"/>`;}).join('');
+  s+=T('every day is a',200,250,{f:F.cav,s:44,w:700,c:C.plum,st:'#fff',sw:6});
+  s+=rainbowWord('CELEBRATION',200,318,{f:F.bun,s:44,max:340,amp:4});
+  s+=g(56,352,.7,0,A.blink(sparkle('#F5C451'),1.3))+g(344,350,.6,0,A.blink(star('#F7A8B8',10),1.6,-.6))+g(200,366,.5,0,A.bob(heart(C.rose),4,1.6));
+  return s;};
+
 /* ============ more illustrations ============ */
 const snail=(sh,bd)=>`<path d="M-44 22 C-44 10 -34 8 -22 10 L34 10 C46 10 48 22 40 24 L-38 24 C-42 24 -44 23 -44 22Z" fill="${bd}"/><path d="M-36 14 C-44 -4 -34 -16 -24 -8 L-18 12Z" fill="${bd}"/><path d="M-32 -10 L-38 -24 M-26 -10 L-24 -26" stroke="${bd}" stroke-width="3" stroke-linecap="round"/><circle cx="-38" cy="-25" r="3.5" fill="${C.ink}"/><circle cx="-24" cy="-27" r="3.5" fill="${C.ink}"/><circle cx="6" cy="-10" r="24" fill="${sh}"/><path d="M6 -10 m-3 0 a3 3 0 1 1 6 0 a7 7 0 1 1 -14 0 a11 11 0 1 1 22 0 a15 15 0 1 1 -30 0 a19 19 0 0 1 38 0" stroke="#fff" stroke-width="3" fill="none" opacity=".7" stroke-linecap="round"/><path d="M-32 2 q3 3 6 0" stroke="${C.ink}" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="-36" cy="6" rx="3" ry="2" fill="#F49BB2"/>`;
 const mushroom=c=>`<path d="M-13 0 C-15 20 -11 34 0 34 C11 34 15 20 13 0Z" fill="#FFF3E6"/><path d="M-40 4 C-40 -32 40 -32 40 4 Q0 12 -40 4Z" fill="${c}"/><circle cx="-18" cy="-10" r="6" fill="#fff" opacity=".85"/><circle cx="8" cy="-18" r="4.5" fill="#fff" opacity=".85"/><circle cx="22" cy="-4" r="5" fill="#fff" opacity=".85"/>`+kawaii(0,18,.42);
@@ -907,7 +1000,7 @@ q('low','#F1E9FB',[['float like','ama',50,'plum'],['a bubble','pac',56,'rose'],[
 q('side','#FBEBDD',[['coffee','pac',72,'rose'],['is','cav',46,'teal'],['JOY','shr',84,'coral']],coffeeCup(),{ms:1.45,mx:298,my:214}),
 q('low','#DCE6F7',[['dance','shr',76,'coral'],['in the rain','pac',54,'plum']],rainBoots(),{my:300,ms:1.35,ly2:200,deco:rainfall(107,26,[40,30,360,210])}),
 q('hero','#FFF0F3',[['be thankful,','pac',56,'rose'],['always','sac',78,'teal']],bouquet(),{my:116,ms:1.2,ly1:214}),
-q('side','#D3D6F2',[['hot chocolate','pac',44,'rose'],['on a','cav',42,'plum'],['cold night','ama',56,'plum']],cocoa(),{ms:1.45,mx:310,my:222,deco:L([snowfall(109,40),g(336,52,.9,-20,moon('#FFE9A8')),stars(1109,8,['#fff'])])}),
+q('side','#D3D6F2',[['hot chocolate','pac',44,'rose'],['on a','cav',42,'plum'],['chilly night','ama',56,'plum']],cocoa(),{ms:1.45,mx:310,my:222,deco:L([snowfall(109,40),g(336,52,.9,-20,moon('#FFE9A8')),stars(1109,8,['#fff'])])}),
 q('hero','#E7F5EE',[['always stay','ama',52,'plum'],['young','shr',76,'coral'],['at heart','pac',54,'rose']],pinwheel(),{my:100,ms:1.15,ly1:184}),
 q('hero','#E3F3F1',[['breathe in,','ama',56,'teal'],['and breathe out','pac',50,'rose']],lotus(),{my:122,ms:1.4,ly1:222}),
 q('hero','#FFF5E1',[['think of what','ama',46,'plum'],['makes you','cav',40,'teal'],['happy','shr',66,'rose']],hamsterThought(),{my:122,ms:1.2,ly1:224}),
@@ -920,11 +1013,10 @@ q('hero','#FDE4EA',[['I love you','pac',68,'rose']],otters(),{my:150,ms:1.45,ly1
 {bg:'#FDEEF2',ink:C.plum,art:bloomsPage},
 {bg:'#FFF6E2',ink:C.plum,art:richPage},
 {bg:'#EAE9FA',ink:C.plum,art:voicePage},
-q('hero','#E6F4EC',[['always be','cav',48,'plum'],['grateful','pac',66,'rose']],panda(),{my:124,ms:1.3,ly1:218,deco:softDisc(200,124,92)+confetti(122,10,['#fff','#F7B6C8'],[[20,200,380,380]])}),
+q('hero','#FFF0F3',[['always be','cav',50,'plum'],['grateful','pac',68,'rose']],mailbox(),{my:118,ms:1.3,ly1:220,deco:softDisc(200,112,92)+confetti(122,10,['#fff','#F7B6C8'],[[20,200,380,380]])}),
 q('hero','#FFF6DA',[['keep','ama',60,'plum'],['learning','pac',64,'teal']],bulb(),{my:132,ms:1.25,ly1:222,deco:confetti(123,10,['#F5C451','#fff'],[[20,210,380,380],[90,20,310,210]])}),
 q('low','#E9F0FB',[['age is just','cav',48,'plum'],['a number','shr',64,'coral']],turtle(),{my:298,ms:1.4,ly2:196,deco:softDisc(210,300,96)+confetti(124,12,['#fff','#F7A8B8','#FFE69A'],[[20,20,380,210]])}),
 q('side','#FDEAF0',[['it’s','cav',46,'plum'],['never','shr',64,'rose'],['too late','pac',54,'teal']],clock(),{ms:1.5,mx:300,my:206,deco:softDisc(300,206,90)+confetti(125,10,['#fff','#B9D6F2'],[[20,40,240,360],[210,100,390,310]])}),
-q('side','#FFF1E6',[['if you are','cav',42,'plum'],['N.I.T.,','bun',54,'coral'],['you are','cav',42,'plum'],['E.','shr',76,'teal'],['( furniture )','ama',28,'plum']],armchair(),{ms:1.35,mx:296,my:214,deco:softDisc(296,214,92)}),
 {bg:'#FFF8E6',ink:C.plum,art:smilePage},
 q('hero','#EFE6FA',[['happy','pac',72,'rose'],['HOUR','bun',66,'teal']],cheers(),{my:126,ms:1.5,ly1:218,deco:softDisc(200,118,92)+confetti(128,14,['#fff','#F5C451','#F7A8B8'],[[20,200,380,380]])}),
 q('hero','#EAF3FB',[['add to','cav',50,'plum'],['CART','bun',78,'coral']],cartFace(),{my:132,ms:1.35,ly1:226,deco:softDisc(200,128,96)+confetti(129,12,['#fff','#F7A8B8','#FFE69A'],[[20,210,380,380]])}),
@@ -932,6 +1024,19 @@ q('hero','#FFF1E6',[['buy one,','pac',58,'rose'],['GET ONE','shr',58,'teal']],tw
 q('side','#EAF6EE',[['health','pac',60,'green'],['is','cav',44,'plum'],['WEALTH','shr',54,'gold']],crownApple(),{ms:1.3,mx:306,my:216,max:180,deco:softDisc(306,212,84)+confetti(131,10,['#fff','#F5C451'],[[20,40,230,360]])}),
 {type:'craft',bg:'#FFF4EA',ink:C.plum,art:foxCraft},
 q('hero','#D9DAF5',[['the stars are','ama',48,'plum'],['your guardian','cav',46,'plum'],['angels','pac',70,'white']],starAngels(),{my:104,ms:1.15,ly1:182,deco:stars(133,30,['#fff','#FFE9A8']).replace(/<g transform="translate\(([\d.]+) ([\d.]+)\)/g,(m,a,b)=>+b>170?'<g opacity="0" transform="translate('+a+' '+b+')':m)+softDisc(200,104,70,'#fff',.35)}),
+q('hero','#FFF1E6',[['hello!','pac',70,'rose'],['I’m glad','cav',44,'plum'],['you are here!','cav',44,'plum']],puppy(),{my:116,ms:1.3,ly1:206,deco:softDisc(200,112,90)+g(318,58,.9,-10,A.bob(smiley('#FFE69A'),4,2))+confetti(134,10,['#fff','#F7B6C8'],[[20,190,300,380]])}),
+q('low','#FDECEE',[['paint the town','cav',48,'plum'],['RED!','shr',84,'#F07079']],paintTown(),{my:300,ms:1.35,ly2:200,deco:softDisc(200,300,100,'#fff',.55)}),
+q('hero','#FFF6D6',[['don’t worry,','cav',48,'plum'],['be happy','pac',64,'rose']],pineapple(),{my:118,ms:1.25,ly1:222,deco:softDisc(200,118,90)+confetti(136,10,['#fff','#F5C451'],[[20,210,380,380]])}),
+{bg:'#EEF2FB',ink:C.plum,art:celebrationPage},
+q('hero','#EAF6EE',[['today','pac',64,'teal'],['is a','cav',42,'plum'],['PRESENT','shr',58,'rose']],calendarGift(),{my:110,ms:1.15,ly1:190,deco:softDisc(200,110,90,'#BFE3CC',.85)}),
+q('hero','#F4EEFB',[['sending you','cav',46,'plum'],['hugs & kisses','pac',52,'rose']],octopus(),{my:116,ms:1.25,ly1:222,deco:softDisc(200,110,92)+confetti(139,10,['#fff','#F7B6C8'],[[20,200,380,380]])}),
+q('hero','#D6D9F4',[['the moon is','ama',50,'plum'],['smiling','pac',66,'white'],['at you','cav',46,'plum']],fullMoon(),{my:104,ms:1.05,ly1:188,deco:stars(140,30,['#fff','#FFE9A8']).replace(/<g transform="translate\(([\d.]+) ([\d.]+)\)/g,(m,a,b)=>+b>176?'<g opacity="0" transform="translate('+a+' '+b+')':m)}),
+q('hero','#EAF4F1',[['relaxing','pac',62,'teal'],['SUNDAY','shr',58,'rose']],hammock(),{my:122,ms:1.15,ly1:226,deco:softDisc(200,118,98,'#fff',.5)+confetti(141,8,['#fff','#F7B6C8'],[[20,200,380,380]])}),
+q('low','#FFF7DE',[['grow anywhere,','cav',48,'plum'],['like','ama',40,'plum'],['dandelions','pac',58,'gold']],crackDandelion(),{my:310,ms:1.3,ly2:214,deco:softDisc(200,300,96,'#DCEFD2',.8)}),
+q('hero','#FDE6E0',[['the','ama',36,'plum'],['soothing','pac',64,'rose'],['sunset','cav',52,'plum']],flamingoSunset(),{my:110,ms:1.25,ly1:210,deco:''}),
+q('hero','#EEF6F1',[['twinkle like','cav',46,'plum'],['the Christmas','pac',48,'rose'],['lights','shr',58,'teal']],xmasTree(),{my:112,ms:1.2,ly1:198,deco:softDisc(200,108,94)+stars(143,10,['#FFE69A','#fff']).replace(/<g transform="translate\(([\d.]+) ([\d.]+)\)/g,(m,a,b)=>+b>190?'<g opacity="0" transform="translate('+a+' '+b+')':m)}),
+q('side','#FFF0F3',[['always','cav',44,'plum'],['leave room','ama',52,'plum'],['for','cav',40,'teal'],['dessert','pac',58,'rose']],sundae(),{ms:1.35,mx:314,my:206,max:168,deco:softDisc(312,206,82)+confetti(144,8,['#fff','#F5C451'],[[20,40,230,360]])}),
+q('hero','#DAD9F4',[['you are a','cav',46,'plum'],['shining','pac',64,'white'],['STAR','shr',60,'gold']],shootingStar(),{my:106,ms:1.3,ly1:194,deco:stars(145,24,['#fff','#FFE9A8']).replace(/<g transform="translate\(([\d.]+) ([\d.]+)\)/g,(m,a,b)=>+b>184?'<g opacity="0" transform="translate('+a+' '+b+')':m)}),
 ];
 
 function renderImage(p){return `<image href="${p.src}" x="0" y="0" width="400" height="${p.caption?340:400}" preserveAspectRatio="xMidYMid ${p.fit||'slice'}"/>`+(p.caption?T(p.caption,200,376,{f:F.cav,s:30,w:700,c:p.ink||C.plum,max:360}):'');}
